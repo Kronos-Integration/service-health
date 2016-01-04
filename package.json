@@ -1,0 +1,51 @@
+{
+  "name": "kronos-health-check-service",
+  "version": "0.0.0-semantic-release",
+  "description": "collects and reports system status",
+  "keywords": [
+    "koa-service"
+  ],
+  "main": "healthCheckService.js",
+  "scripts": {
+    "cover": "node ./node_modules/istanbul/lib/cli.js cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --R spec --U exports tests",
+    "doc": "jsdoc lib/*.js",
+    "test": "mocha tests/*_test.js",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kronos-Integration/kronos-health-check-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kronos-Integration/kronos-health-check-service/issues"
+  },
+  "homepage": "https://github.com/Kronos-Integration/kronos-health-check-service#readme",
+  "dependencies": {
+    "koa-route": "^3.0.0",
+    "kronos-koa-service": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "3.4.1",
+    "chai-as-promised": "^5.2.0",
+    "istanbul": "^0.4.1",
+    "kronos-service-manager": "^2.12.1",
+    "mocha": "^2.3.4",
+    "semantic-release": "6.0.3",
+    "supertest": "^1.1.0",
+    "supertest-as-promised": "^2.0.2"
+  },
+  "contributors": [
+    {
+      "name": "Torsten Link",
+      "email": "torstenlink@gmx.de"
+    },
+    {
+      "name": "Markus Felten",
+      "email": "markus.felten@gmx.de"
+    }
+  ],
+  "license": "BSD-2-Clause",
+  "engines": {
+    "node": ">=4.2.1"
+  }
+}
