@@ -7,20 +7,24 @@ const path = require('path'),
 	route = require('koa-route');
 
 module.exports.registerWithManager = function (manager) {
-	const adminService = manager.serviceDeclare('koa', {
+	const healthCheckService = manager.serviceDeclare('koa', {
 		name: 'health-check',
 		autostart: true,
-
+		port: 9856,
 		get path() {
 			return "/health";
 		},
 
 		get url() {
-			return `http://localhost:${this.port}/${this.path}`;
+			return `http://localhost:${this.port}${this.path}`;
 		}
 	});
 
-	adminService.koa.use(route.get(adminService.path, ctx => {
+	healthCheckService.info({
+		url: healthCheckService.url
+	});
+
+	healthCheckService.koa.use(route.get(healthCheckService.path, ctx => {
 		// TODO always ok ?
 		ctx.body = "OK";
 	}));
