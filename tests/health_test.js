@@ -9,7 +9,7 @@ const chai = require('chai'),
   should = chai.should(),
   request = require("supertest-as-promised")(Promise),
   kronos = require('kronos-service-manager'),
-  admin = require('../healthCheckService');
+  healthCheck = require('../healthCheck');
 
 chai.use(require("chai-as-promised"));
 
@@ -27,14 +27,14 @@ describe('service manager admin', function () {
   function initManager() {
     return kronos.manager({
       services: {
-        admin: {
+        "health-check": {
           logLevel: "error"
         }
       }
     }).then(manager => {
       require('kronos-koa-service').registerWithManager(manager);
 
-      admin.registerWithManager(manager);
+      healthCheck.registerWithManager(manager);
       return Promise.resolve(manager);
     });
   }
@@ -42,10 +42,10 @@ describe('service manager admin', function () {
   describe('health', function () {
     it('GET /health', function (done) {
       initManager().then(function (manager) {
-        const as = manager.services['health-check'];
+        const healthCheck = manager.services['health-check'];
 
         try {
-          request(as.server.listen())
+          request(healthCheck.server.listen())
             .get('/health')
             .expect(200)
             .expect(function (res) {

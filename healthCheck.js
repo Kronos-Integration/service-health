@@ -11,6 +11,7 @@ module.exports.registerWithManager = function (manager) {
 		name: 'health-check',
 		autostart: true,
 		port: 9856,
+
 		get path() {
 			return "/health";
 		},

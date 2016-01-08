@@ -1,11 +1,11 @@
 {
-  "name": "kronos-health-check-service",
+  "name": "kronos-service-health-check",
   "version": "0.0.0-semantic-release",
   "description": "collects and reports system status",
   "keywords": [
     "koa-service"
   ],
-  "main": "healthCheckService.js",
+  "main": "healthCheck.js",
   "scripts": {
     "cover": "node ./node_modules/istanbul/lib/cli.js cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --R spec --U exports tests",
     "doc": "jsdoc lib/*.js",
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kronos-Integration/kronos-health-check-service.git"
+    "url": "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
   },
   "bugs": {
-    "url": "https://github.com/Kronos-Integration/kronos-health-check-service/issues"
+    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
   },
-  "homepage": "https://github.com/Kronos-Integration/kronos-health-check-service#readme",
+  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
     "koa-route": "^3.0.0",
     "kronos-koa-service": "^1.0.0"
@@ -27,8 +27,9 @@
   "devDependencies": {
     "chai": "3.4.1",
     "chai-as-promised": "^5.2.0",
+    "cz-conventional-changelog": "^1.1.5",
     "istanbul": "^0.4.1",
-    "kronos-service-manager": "^2.12.1",
+    "kronos-service-manager": "^2.13.1",
     "mocha": "^2.3.4",
     "semantic-release": "6.0.3",
     "supertest": "^1.1.0",
@@ -47,5 +48,10 @@
   "license": "BSD-2-Clause",
   "engines": {
     "node": ">=4.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
