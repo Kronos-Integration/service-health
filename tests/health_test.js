@@ -14,15 +14,6 @@ const chai = require('chai'),
 chai.use(require("chai-as-promised"));
 
 describe('service manager admin', function () {
-  function shutdownManager(manager, done) {
-    return function (error, result) {
-      manager.shutdown().then(() => {
-        if (error) {
-          return done(error); 
-        } else done();
-      }, done);
-    };
-  }
 
   function initManager() {
     return kronos.manager({
@@ -32,7 +23,7 @@ describe('service manager admin', function () {
         }
       }
     }).then(manager => {
-      require('kronos-koa-service').registerWithManager(manager);
+      require('kronos-service-koa').registerWithManager(manager);
 
       healthCheck.registerWithManager(manager);
       return Promise.resolve(manager);
@@ -51,7 +42,7 @@ describe('service manager admin', function () {
             .expect(function (res) {
               if (res.text !== 'OK') throw Error("not OK");
             })
-            .end(shutdownManager(manager, done));
+            .end(done);
         } catch (e) {
           done(e);
         }
