@@ -45,9 +45,4 @@ class ServiceHealthCheck extends ServiceKOA {
 
 module.exports.registerWithManager = function (manager) {
 	manager.serviceDeclare(ServiceHealthCheck);
-
-	const healthCheckService = manager.serviceDeclare('koa', {
-		port: 9856
-	});
-
 };
