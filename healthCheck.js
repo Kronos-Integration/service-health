@@ -29,7 +29,7 @@ class ServiceHealthCheck extends ServiceKOA {
 	}
 
 	get url() {
-		return `http://localhost:${this.port}${this.path}`;
+		return super.url + this.path;
 	}
 
 	_start() {
