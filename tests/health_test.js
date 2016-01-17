@@ -7,7 +7,6 @@ const chai = require('chai'),
   assert = chai.assert,
   expect = chai.expect,
   should = chai.should(),
-  request = require("supertest-as-promised")(Promise),
   kronos = require('kronos-service-manager'),
   healthCheck = require('../healthCheck');
 

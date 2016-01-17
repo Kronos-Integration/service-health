@@ -1,7 +1,7 @@
 {
   "name": "kronos-service-health-check",
   "version": "0.0.0-semantic-release",
-  "description": "collects and reports system status",
+  "description": "collects and reports system health status",
   "keywords": [
     "koa-service"
   ],
@@ -21,8 +21,7 @@
   },
   "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
-    "koa-route": "^3.0.0",
-    "kronos-service-koa": "^1.0.0"
+    "kronos-service": "^1.0.0"
   },
   "devDependencies": {
     "chai": "3.4.1",
@@ -31,9 +30,7 @@
     "istanbul": "^0.4.1",
     "kronos-service-manager": "^2.13.1",
     "mocha": "^2.3.4",
-    "semantic-release": "6.0.3",
-    "supertest": "^1.1.0",
-    "supertest-as-promised": "^2.0.2"
+    "semantic-release": "6.0.3"
   },
   "contributors": [{
     "name": "Torsten Link",

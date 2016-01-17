@@ -3,13 +3,21 @@
 "use strict";
 
 const path = require('path'),
-	ServiceKOA = require('kronos-service-koa').ServiceKOA,
-	route = require('koa-route');
+	Service = require('kronos-service').Service;
 
-class ServiceHealthCheck extends ServiceKOA {
+/**
+ * collects health state form all components
+ */
+class ServiceHealthCheck extends Service {
 
 	constructor(config) {
 		super(config);
+
+		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => {
+			return Promise.resolve(true);
+		};
+
+		// TODO how to broadcast health state
 	}
 
 	static get type() {
@@ -23,26 +31,8 @@ class ServiceHealthCheck extends ServiceKOA {
 	get autostart() {
 		return true;
 	}
-
-	get path() {
-		return "/health";
-	}
-
-	get url() {
-		return super.url + this.path;
-	}
-
-	_start() {
-		return super.strart().then(f => {
-			this.koa.use(route.get(this.path, ctx => {
-				// TODO always ok ?
-				ctx.body = "OK";
-			}));
-		});
-	}
-
 }
 
-module.exports.registerWithManager = function (manager) {
-	manager.serviceDeclare(ServiceHealthCheck);
+module.exports.registerWithManager = manager => {
+	manager.registerService(ServiceHealthCheck);
 };
