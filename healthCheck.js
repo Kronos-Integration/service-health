@@ -20,12 +20,12 @@ class ServiceHealthCheck extends Service {
 		// TODO how to broadcast health state
 	}
 
-	static get type() {
+	static get name() {
 		return "health-check";
 	}
 
 	get type() {
-		return ServiceHealtCheck.type;
+		return ServiceHealtCheck.name;
 	}
 
 	get autostart() {
@@ -34,5 +34,5 @@ class ServiceHealthCheck extends Service {
 }
 
 module.exports.registerWithManager = manager => {
-	manager.registerService(ServiceHealthCheck);
+	manager.registerService(new ServiceHealthCheck());
 };
