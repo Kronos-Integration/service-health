@@ -14,21 +14,6 @@ chai.use(require("chai-as-promised"));
 
 describe('service manager admin', function () {
 
-  function initManager() {
-    return kronos.manager({
-      services: {
-        "health-check": {
-          logLevel: "error"
-        }
-      }
-    }).then(manager => {
-      require('kronos-service-koa').registerWithManager(manager);
-
-      healthCheck.registerWithManager(manager);
-      return Promise.resolve(manager);
-    });
-  }
-
   describe('health', function () {
     it('GET /health', function (done) {
       initManager().then(function (manager) {
