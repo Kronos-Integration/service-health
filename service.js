@@ -3,7 +3,8 @@
 "use strict";
 
 const path = require('path'),
-	Service = require('kronos-service').Service;
+	Service = require('kronos-service').Service,
+	endpoint = require('kronos-endpoint');
 
 /**
  * collects health state form all components
@@ -25,7 +26,7 @@ class ServiceHealthCheck extends Service {
 	}
 
 	get type() {
-		return ServiceHealtCheck.name;
+		return ServiceHealthCheck.name;
 	}
 
 	get autostart() {
