@@ -5,7 +5,7 @@
   "keywords": [
     "koa-service"
   ],
-  "main": "healthCheck.js",
+  "main": "service.js",
   "scripts": {
     "cover": "node ./node_modules/istanbul/lib/cli.js cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --R spec --U exports tests",
     "doc": "jsdoc lib/*.js",
@@ -27,10 +27,9 @@
     "chai": "3.4.1",
     "chai-as-promised": "^5.2.0",
     "cz-conventional-changelog": "^1.1.5",
-    "istanbul": "^0.4.1",
-    "kronos-service-manager": "^2.13.1",
+    "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
-    "semantic-release": "6.0.3"
+    "semantic-release": "6.2.0"
   },
   "contributors": [{
     "name": "Torsten Link",

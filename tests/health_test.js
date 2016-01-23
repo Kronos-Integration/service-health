@@ -7,30 +7,28 @@ const chai = require('chai'),
   assert = chai.assert,
   expect = chai.expect,
   should = chai.should(),
-  kronos = require('kronos-service-manager'),
-  healthCheck = require('../healthCheck');
+  service = require('kronos-service'),
+  ServiceProviderMixin = service.ServiceProviderMixin,
+  ServiceConfig = service.ServiceConfig,
+  ServiceHealthCheck = require('../service.js');
 
-chai.use(require("chai-as-promised"));
+class _ServiceProvider {}
+class ServiceProvider extends service.ServiceProviderMixin(_ServiceProvider) {}
 
-describe('service manager admin', function () {
+const sp = new ServiceProvider();
 
-  describe('health', function () {
-    it('GET /health', function (done) {
-      initManager().then(function (manager) {
-        const healthCheck = manager.services['health-check'];
+describe('health check serice', () => {
 
-        try {
-          request(healthCheck.server.listen())
-            .get('/health')
-            .expect(200)
-            .expect(function (res) {
-              if (res.text !== 'OK') throw Error("not OK");
-            })
-            .end(done);
-        } catch (e) {
-          done(e);
-        }
-      }, done);
+  ServiceHealthCheck.registerWithManager(sp);
+
+  const hs = sp.createServiceInstance('health-check', {});
+  hs.start();
+
+  describe('health endpoint', () => {
+    it('got response', done => {
+      hs.endpoints.health.receive({}).then(r => {
+        done();
+      })
     });
   });
 });
