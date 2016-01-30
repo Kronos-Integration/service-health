@@ -11,18 +11,18 @@ const chai = require('chai'),
   ServiceConfig = service.ServiceConfig,
   ServiceHealthCheck = require('../service.js');
 
-class _ServiceProvider {}
-class ServiceProvider extends service.ServiceProviderMixin(_ServiceProvider) {}
+class ServiceProvider extends service.ServiceProviderMixin(service.Service) {}
 
 const sp = new ServiceProvider();
 
 describe('health check serice', () => {
   ServiceHealthCheck.registerWithManager(sp);
 
-  // TODO instance or factory ?
-  const hs = sp.services['health-check'];
+  const hs = sp.createServiceFactoryInstanceFromConfig({
+    type: 'health-check',
+    port: 1234
+  });
 
-  //const hs = sp.createServiceInstance('health-check', {});
   hs.start();
 
   describe('health endpoint', () => {
