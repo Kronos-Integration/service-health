@@ -7,46 +7,23 @@ const chai = require('chai'),
   assert = chai.assert,
   expect = chai.expect,
   should = chai.should(),
-  request = require("supertest-as-promised")(Promise),
-  kronos = require('kronos-service-manager'),
-  healthCheck = require('../healthCheck');
+  service = require('kronos-service'),
+  ServiceConfig = service.ServiceConfig,
+  ServiceHealthCheck = require('../service.js');
 
-chai.use(require("chai-as-promised"));
+class ServiceProvider extends service.ServiceProviderMixin(service.Service) {}
 
-describe('service manager admin', function () {
+const sp = new ServiceProvider();
 
-  function initManager() {
-    return kronos.manager({
-      services: {
-        "health-check": {
-          logLevel: "error"
-        }
-      }
-    }).then(manager => {
-      require('kronos-service-koa').registerWithManager(manager);
-
-      healthCheck.registerWithManager(manager);
-      return Promise.resolve(manager);
-    });
-  }
-
-  describe('health', function () {
-    it('GET /health', function (done) {
-      initManager().then(function (manager) {
-        const healthCheck = manager.services['health-check'];
-
-        try {
-          request(healthCheck.server.listen())
-            .get('/health')
-            .expect(200)
-            .expect(function (res) {
-              if (res.text !== 'OK') throw Error("not OK");
-            })
-            .end(done);
-        } catch (e) {
-          done(e);
-        }
-      }, done);
+describe('health check serice', () => {
+  it('got response', done => {
+    ServiceHealthCheck.registerWithManager(sp).then(() => {
+      const hs = sp.createServiceFactoryInstanceFromConfig({
+        type: 'health-check',
+        port: 1234
+      });
+      hs.start();
+      hs.endpoints.state.receive({}).then(r => done())
     });
   });
 });
