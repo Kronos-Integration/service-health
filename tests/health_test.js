@@ -16,20 +16,14 @@ class ServiceProvider extends service.ServiceProviderMixin(service.Service) {}
 const sp = new ServiceProvider();
 
 describe('health check serice', () => {
-  ServiceHealthCheck.registerWithManager(sp);
-
-  const hs = sp.createServiceFactoryInstanceFromConfig({
-    type: 'health-check',
-    port: 1234
-  });
-
-  hs.start();
-
-  describe('health endpoint', () => {
-    it('got response', done => {
-      hs.endpoints.state.receive({}).then(r => {
-        done();
-      })
+  it('got response', done => {
+    ServiceHealthCheck.registerWithManager(sp).then(() => {
+      const hs = sp.createServiceFactoryInstanceFromConfig({
+        type: 'health-check',
+        port: 1234
+      });
+      hs.start();
+      hs.endpoints.state.receive({}).then(r => done())
     });
   });
 });
