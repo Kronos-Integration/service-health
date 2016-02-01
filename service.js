@@ -34,6 +34,4 @@ class ServiceHealthCheck extends Service {
 	}
 }
 
-module.exports.registerWithManager = manager => {
-	manager.registerServiceFactory(ServiceHealthCheck);
-};
+module.exports.registerWithManager = manager => manager.registerServiceFactory(ServiceHealthCheck);
