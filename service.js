@@ -34,4 +34,9 @@ class ServiceHealthCheck extends Service {
 	}
 }
 
-module.exports.registerWithManager = manager => manager.registerServiceFactory(ServiceHealthCheck);
+module.exports.registerWithManager = manager =>
+	manager.registerServiceFactory(ServiceHealthCheck).then(sf =>
+		manager.declareService({
+			'type': sf.name,
+			'name': sf.name
+		}));
