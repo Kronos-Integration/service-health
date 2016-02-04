@@ -3,7 +3,6 @@
   "version": "0.0.0-semantic-release",
   "description": "collects and reports system health status",
   "keywords": [
-    "koa-service",
     "kronos-service"
   ],
   "main": "service.js",
