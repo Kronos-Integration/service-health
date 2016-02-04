@@ -3,11 +3,12 @@
   "version": "0.0.0-semantic-release",
   "description": "collects and reports system health status",
   "keywords": [
-    "koa-service"
+    "koa-service",
+    "kronos-service"
   ],
   "main": "service.js",
   "scripts": {
-    "cover": "node ./node_modules/istanbul/lib/cli.js cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --R spec --U exports tests",
+    "cover": "node ./node_modules/istanbul/lib/cli.js cover --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --R spec --U exports tests/*_test.js",
     "doc": "jsdoc lib/*.js",
     "test": "mocha tests/*_test.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -24,11 +25,12 @@
     "kronos-service": "^2.0.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "3.5.0",
     "cz-conventional-changelog": "^1.1.5",
-    "istanbul": "^0.4.2",
-    "mocha": "^2.4.5",
-    "semantic-release": "6.2.0"
+    "istanbul": "0.4.2",
+    "mocha": "2.4.5",
+    "semantic-release": "6.2.0",
+    "jsdoc": "3.4.0"
   },
   "contributors": [
     {
