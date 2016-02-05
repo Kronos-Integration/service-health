@@ -11,8 +11,8 @@ const path = require('path'),
  */
 class ServiceHealthCheck extends Service {
 
-	constructor(config) {
-		super(config);
+	constructor(config, owner) {
+		super(config, owner);
 
 		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => {
 			return Promise.resolve(true);
