@@ -8,6 +8,7 @@ const path = require('path'),
 
 /**
  * collects health state form all components
+ * Currently we only check tha no service is in failed state
  */
 class ServiceHealthCheck extends Service {
 
@@ -15,7 +16,8 @@ class ServiceHealthCheck extends Service {
 		super(config, owner);
 
 		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => {
-			return Promise.resolve(true);
+			const failedService = Object.keys(this.owner.services).find(n => this.owner.services[n].state === 'failed');
+			return Promise.resolve(failedService ? false : true);
 		};
 
 		// TODO how to broadcast health state
