@@ -8,7 +8,7 @@ const path = require('path'),
 
 /**
  * collects health state form all components
- * Currently we only check tha no service is in failed state
+ * Currently we only check there no service is in failed state
  */
 class ServiceHealthCheck extends Service {
 
@@ -16,11 +16,10 @@ class ServiceHealthCheck extends Service {
 		super(config, owner);
 
 		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => {
-			const failedService = Object.keys(this.owner.services).find(n => this.owner.services[n].state === 'failed');
-			return Promise.resolve(failedService ? false : true);
+			return Promise.resolve(this.isHealthy);
 		};
 
-		// TODO how to broadcast health state
+		this.addEndpoint(new endpoint.SendEndpoint('broadcast', this));
 	}
 
 	static get name() {
@@ -33,6 +32,35 @@ class ServiceHealthCheck extends Service {
 
 	get autostart() {
 		return true;
+	}
+
+	get isHealthy() {
+		const services = this.owner.services;
+		const failedService = Object.keys(services).find(n => services[n].state === 'failed');
+		return failedService ? false : true;
+	}
+
+	_start() {
+		let lastIsHealthy = this.isHealthy;
+
+		this._serviceStateChangedListener = (service, oldState, newState) => {
+			const currentIsHealthy = this.isHealthy;
+			if (currentIsHealthy != lastIsHealthy) {
+				lastIsHealthy = currentIsHealthy;
+				if (this.endpoint.broadcast.isConnected) {
+					this.endpoint.broadcast.receive(currentIsHealthy);
+				}
+			}
+		};
+
+		this.owner.addListener('serviceStateChanged', this._serviceStateChangedListener);
+		return super._start();
+	}
+
+	_stop() {
+		this.owner.removeListener('serviceStateChanged', this._serviceStateChangedListener);
+		this._serviceStateChangedListener = undefined;
+		return super._stop();
 	}
 }
 

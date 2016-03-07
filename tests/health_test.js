@@ -16,7 +16,7 @@ class ServiceProvider extends service.ServiceProviderMixin(service.Service) {}
 const sp = new ServiceProvider();
 
 describe('health check service', () => {
-  it('got response', () =>
+  it('got state response', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
       const hs = sp.createServiceFactoryInstanceFromConfig({
         type: 'health-check'
