@@ -3,11 +3,12 @@
 "use strict";
 
 const path = require('path'),
+	process = require('process'),
 	Service = require('kronos-service').Service,
 	endpoint = require('kronos-endpoint');
 
 /**
- * collects health state form all components
+ * Collects health state form all components
  * Currently we only check there no service is in failed state
  */
 class ServiceHealthCheck extends Service {
@@ -15,9 +16,10 @@ class ServiceHealthCheck extends Service {
 	constructor(config, owner) {
 		super(config, owner);
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => {
-			return Promise.resolve(this.isHealthy);
-		};
+		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => Promise.resolve(this.isHealthy);
+		this.addEndpoint(new endpoint.ReceiveEndpoint('memory', this)).receive = request => Promise.resolve(process.memoryUsage());
+		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this)).receive = request => Promise.resolve(process.uptime() *
+			1000);
 
 		this.addEndpoint(new endpoint.SendEndpoint('broadcast', this));
 	}
