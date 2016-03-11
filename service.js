@@ -49,8 +49,8 @@ class ServiceHealthCheck extends Service {
 			const currentIsHealthy = this.isHealthy;
 			if (currentIsHealthy != lastIsHealthy) {
 				lastIsHealthy = currentIsHealthy;
-				if (this.endpoint.broadcast.isConnected) {
-					this.endpoint.broadcast.receive(currentIsHealthy);
+				if (this.endpoints.broadcast.isConnected) {
+					this.endpoints.broadcast.receive(currentIsHealthy);
 				}
 			}
 		};
