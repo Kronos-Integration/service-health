@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
-    "kronos-service": "2.12.5"
+    "kronos-service": "2.13.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
