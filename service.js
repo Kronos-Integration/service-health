@@ -1,6 +1,6 @@
 /* jslint node: true, esnext: true */
 
-"use strict";
+'use strict';
 
 const path = require('path'),
 	process = require('process'),
@@ -25,7 +25,7 @@ class ServiceHealthCheck extends Service {
 	}
 
 	static get name() {
-		return "health-check";
+		return 'health-check';
 	}
 
 	get type() {
