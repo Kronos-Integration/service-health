@@ -21,7 +21,22 @@ class ServiceHealthCheck extends Service {
 		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this)).receive = request => Promise.resolve(process.uptime() *
 			1000);
 
-		this.addEndpoint(new endpoint.SendEndpoint('broadcast', this));
+		const hcs = this;
+
+		this.addEndpoint(new endpoint.SendEndpoint('stateBroadcast', this, {
+			hasBeenConnected() {
+					// immediate send current state
+					this.receive(hcs.isHealthy);
+
+					hcs._serviceStateChangedListener = () => {
+						this.receive(hcs.isHealthy);
+					};
+					hcs.addListener('serviceStateChanged', hcs._serviceStateChangedListener);
+				},
+				hasBeenDisConnected() {
+					hcs.removeListener('serviceStateChanged', hcs._serviceStateChangedListener);
+				}
+		}));
 	}
 
 	static get name() {
@@ -40,29 +55,6 @@ class ServiceHealthCheck extends Service {
 		const services = this.owner.services;
 		const failedService = Object.keys(services).find(n => services[n].state === 'failed');
 		return failedService ? false : true;
-	}
-
-	_start() {
-		let lastIsHealthy = this.isHealthy;
-
-		this._serviceStateChangedListener = (service, oldState, newState) => {
-			const currentIsHealthy = this.isHealthy;
-			if (currentIsHealthy != lastIsHealthy) {
-				lastIsHealthy = currentIsHealthy;
-				if (this.endpoints.broadcast.isConnected) {
-					this.endpoints.broadcast.receive(currentIsHealthy);
-				}
-			}
-		};
-
-		this.owner.addListener('serviceStateChanged', this._serviceStateChangedListener);
-		return super._start();
-	}
-
-	_stop() {
-		this.owner.removeListener('serviceStateChanged', this._serviceStateChangedListener);
-		this._serviceStateChangedListener = undefined;
-		return super._stop();
 	}
 }
 
