@@ -26,7 +26,7 @@ describe('health check service', () => {
     })
   );
 
-  it('state broadcast', () =>
+  it('state opposite', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
       const hs = sp.createServiceFactoryInstanceFromConfig({
         type: 'health-check'
@@ -42,7 +42,7 @@ describe('health check service', () => {
         theState = message;
       };
 
-      hs.endpoints.stateBroadcast.connected = re;
+      hs.endpoints.state.opposite.connected = re;
 
       return hs.start().then(() => hs.endpoints.state.receive({}).then(r => assert.equal(theState, true)));
     })

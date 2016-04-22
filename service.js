@@ -9,21 +9,20 @@ const path = require('path'),
 
 /**
  * Collects health state form all components
- * Currently we only check there no service is in failed state
+ * Currently we only check that there no service is in failed state
  */
 class ServiceHealthCheck extends Service {
 
 	constructor(config, owner) {
 		super(config, owner);
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this)).receive = request => Promise.resolve(this.isHealthy);
 		this.addEndpoint(new endpoint.ReceiveEndpoint('memory', this)).receive = request => Promise.resolve(process.memoryUsage());
 		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this)).receive = request => Promise.resolve(process.uptime() *
 			1000);
 
 		const hcs = this;
 
-		this.addEndpoint(new endpoint.SendEndpoint('stateBroadcast', this, {
+		const stateSend = new endpoint.SendEndpoint('stateBroadcast', this, {
 			hasBeenConnected() {
 					// immediate send current state
 					this.receive(hcs.isHealthy);
@@ -36,7 +35,11 @@ class ServiceHealthCheck extends Service {
 				hasBeenDisConnected() {
 					hcs.removeListener('serviceStateChanged', hcs._serviceStateChangedListener);
 				}
-		}));
+		});
+
+		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this, {
+			opposite: stateSend
+		})).receive = request => Promise.resolve(this.isHealthy);
 	}
 
 	static get name() {
