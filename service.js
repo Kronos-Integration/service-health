@@ -16,13 +16,24 @@ class ServiceHealthCheck extends Service {
 	constructor(config, owner) {
 		super(config, owner);
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('memory', this)).receive = request => Promise.resolve(process.memoryUsage());
-		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this)).receive = request => Promise.resolve(process.uptime() *
-			1000);
-
 		const hcs = this;
 
-		const stateSend = new endpoint.SendEndpoint('stateBroadcast', this, {
+		const sendMemory = new endpoint.SendEndpoint('memory', this, {
+			hasBeenConnected() {
+					hcs._memoryInterval = setInterval(() => {
+						this.receive(process.memoryUsage());
+					}, 5000);
+				},
+				hasBeenDisConnected() {
+					clearInterval(hcs._memoryInterval);
+				}
+		});
+
+		this.addEndpoint(new endpoint.ReceiveEndpoint('memory', this, {
+			opposite: sendMemory
+		})).receive = request => Promise.resolve(process.memoryUsage());
+
+		const sendState = new endpoint.SendEndpoint('state', this, {
 			hasBeenConnected() {
 					// immediate send current state
 					this.receive(hcs.isHealthy);
@@ -38,8 +49,26 @@ class ServiceHealthCheck extends Service {
 		});
 
 		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this, {
-			opposite: stateSend
+			opposite: sendState
 		})).receive = request => Promise.resolve(this.isHealthy);
+
+
+		const sendUptime = new endpoint.SendEndpoint('uptime', this, {
+			hasBeenConnected() {
+					hcs._uptimeInterval = setInterval(() => {
+						this.receive(process.uptime() *
+							1000);
+					}, 5000);
+				},
+				hasBeenDisConnected() {
+					clearInterval(hcs._uptimeInterval);
+				}
+		});
+
+		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this, {
+			opposite: sendUptime
+		})).receive = request => Promise.resolve(process.uptime() *
+			1000);
 	}
 
 	static get name() {
