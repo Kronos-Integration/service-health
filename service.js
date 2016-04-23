@@ -22,7 +22,7 @@ class ServiceHealthCheck extends Service {
 			hasBeenConnected() {
 					hcs._memoryInterval = setInterval(() => {
 						this.receive(process.memoryUsage());
-					}, 5000);
+					}, this.memoryInterval * 1000);
 				},
 				hasBeenDisConnected() {
 					clearInterval(hcs._memoryInterval);
@@ -58,7 +58,7 @@ class ServiceHealthCheck extends Service {
 					hcs._uptimeInterval = setInterval(() => {
 						this.receive(process.uptime() *
 							1000);
-					}, 5000);
+					}, this.uptimeInterval * 1000);
 				},
 				hasBeenDisConnected() {
 					clearInterval(hcs._uptimeInterval);
@@ -81,6 +81,20 @@ class ServiceHealthCheck extends Service {
 
 	get autostart() {
 		return true;
+	}
+
+	get configurationAttributes() {
+		return Object.assign({
+			uptimeInterval: {
+				description: 'uptime endpoint send interval in seconds',
+				default: 60
+			},
+			memoryInterval: {
+				description: 'memory endpoint send interval in seconds',
+				default: 60
+			}
+
+		}, super.configurationAttributes);
 	}
 
 	get isHealthy() {
