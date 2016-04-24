@@ -22,7 +22,7 @@ class ServiceHealthCheck extends Service {
 			hasBeenConnected() {
 					hcs._memoryInterval = setInterval(() => {
 						this.receive(process.memoryUsage());
-					}, this.memoryInterval * 1000);
+					}, hcs.memoryInterval * 1000);
 				},
 				hasBeenDisConnected() {
 					clearInterval(hcs._memoryInterval);
@@ -52,13 +52,12 @@ class ServiceHealthCheck extends Service {
 			opposite: sendState
 		})).receive = request => Promise.resolve(this.isHealthy);
 
-
 		const sendUptime = new endpoint.SendEndpoint('uptime', this, {
 			hasBeenConnected() {
 					hcs._uptimeInterval = setInterval(() => {
 						this.receive(process.uptime() *
 							1000);
-					}, this.uptimeInterval * 1000);
+					}, hcs.uptimeInterval * 1000);
 				},
 				hasBeenDisConnected() {
 					clearInterval(hcs._uptimeInterval);
