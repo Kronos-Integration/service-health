@@ -85,12 +85,14 @@ class ServiceHealthCheck extends Service {
 	get configurationAttributes() {
 		return Object.assign({
 			uptimeInterval: {
-				description: 'uptime endpoint send interval in seconds',
-				default: 60
+				description: 'uptime endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
 			},
 			memoryInterval: {
-				description: 'memory endpoint send interval in seconds',
-				default: 60
+				description: 'memory endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
 			}
 
 		}, super.configurationAttributes);
@@ -106,6 +108,6 @@ class ServiceHealthCheck extends Service {
 module.exports.registerWithManager = manager =>
 	manager.registerServiceFactory(ServiceHealthCheck).then(sf =>
 		manager.declareService({
-			'type': sf.name,
-			'name': sf.name
+			type: sf.name,
+			name: sf.name
 		}));
