@@ -26,6 +26,43 @@ describe('health check service', () => {
     })
   );
 
+  it('memory', () =>
+    ServiceHealthCheck.registerWithManager(sp).then(() => {
+      const hs = sp.createServiceFactoryInstanceFromConfig({
+        type: 'health-check'
+      }, sp);
+
+      const re = new endpoint.SendEndpoint('test', {
+        name: 'a'
+      });
+
+      re.connected = hs.endpoints.memory;
+
+      return hs.start().then(() => re.receive({}).then(response => assert.isAbove(response.heapTotal, 10000)));
+    })
+  );
+
+  it('cpu opposite', () =>
+    ServiceHealthCheck.registerWithManager(sp).then(() => {
+      const hs = sp.createServiceFactoryInstanceFromConfig({
+        type: 'health-check'
+      }, sp);
+
+      const re = new endpoint.ReceiveEndpoint('test', {
+        name: 'a'
+      });
+
+      let cpuUsage;
+      re.receive = message => {
+        cpuUsage = message;
+      };
+
+      hs.endpoints.cpu.opposite.connected = re;
+
+      return hs.start().then(() => hs.endpoints.cpu.receive({}).then(r => assert.isAbove(cpuUsage.user, 100)));
+    })
+  );
+
   it('state opposite', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
       const hs = sp.createServiceFactoryInstanceFromConfig({

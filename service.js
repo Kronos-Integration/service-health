@@ -18,6 +18,23 @@ class ServiceHealthCheck extends Service {
 
 		const hcs = this;
 
+		const sendCPU = new endpoint.SendEndpoint('cpu', this, {
+			hasBeenConnected() {
+					hcs._cpuInterval = setInterval(() => {
+						this.receive(process.cpuUsage());
+					}, hcs._cpuInterval * 1000);
+					this.receive(process.cpuUsage());
+				},
+				hasBeenDisConnected() {
+					clearInterval(hcs._cpuInterval);
+				}
+		});
+
+		this.addEndpoint(new endpoint.ReceiveEndpoint('cpu', this, {
+			opposite: sendCPU
+		})).receive = request => Promise.resolve(process.cpuUsage());
+
+
 		const sendMemory = new endpoint.SendEndpoint('memory', this, {
 			hasBeenConnected() {
 					hcs._memoryInterval = setInterval(() => {
@@ -93,8 +110,12 @@ class ServiceHealthCheck extends Service {
 				description: 'memory endpoint send interval (in seconds)',
 				default: 60,
 				type: 'duration'
+			},
+			cpuInterval: {
+				description: 'cpu endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
 			}
-
 		}, super.configurationAttributes);
 	}
 
