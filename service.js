@@ -22,7 +22,7 @@ class ServiceHealthCheck extends Service {
 			hasBeenConnected() {
 					hcs._cpuInterval = setInterval(() => {
 						this.receive(process.cpuUsage());
-					}, hcs._cpuInterval * 1000);
+					}, hcs.cpuInterval * 1000);
 					this.receive(process.cpuUsage());
 				},
 				hasBeenDisConnected() {
