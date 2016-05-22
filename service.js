@@ -19,13 +19,21 @@ class ServiceHealthCheck extends Service {
 		const hcs = this;
 
 		const sendCPU = new endpoint.SendEndpoint('cpu', this, {
-			hasBeenConnected() {
+			hasBeenOpened() {
+					hcs.trace({
+						endpoint: this,
+						state: 'open'
+					});
 					hcs._cpuInterval = setInterval(() => {
 						this.receive(process.cpuUsage());
 					}, hcs.cpuInterval * 1000);
 					this.receive(process.cpuUsage());
 				},
-				hasBeenDisConnected() {
+				willBeClosed() {
+					hcs.trace({
+						endpoint: this,
+						state: 'close'
+					});
 					clearInterval(hcs._cpuInterval);
 				}
 		});
@@ -36,12 +44,21 @@ class ServiceHealthCheck extends Service {
 
 
 		const sendMemory = new endpoint.SendEndpoint('memory', this, {
-			hasBeenConnected() {
+			hasBeenOpened() {
+					hcs.trace({
+						endpoint: this,
+						state: 'open'
+					});
 					hcs._memoryInterval = setInterval(() => {
 						this.receive(process.memoryUsage());
 					}, hcs.memoryInterval * 1000);
 				},
-				hasBeenDisConnected() {
+				willBeClosed() {
+					hcs.trace({
+						endpoint: this,
+						state: 'close'
+					});
+
 					clearInterval(hcs._memoryInterval);
 				}
 		});
@@ -51,7 +68,11 @@ class ServiceHealthCheck extends Service {
 		})).receive = request => Promise.resolve(process.memoryUsage());
 
 		const sendState = new endpoint.SendEndpoint('state', this, {
-			hasBeenConnected() {
+			hasBeenOpened() {
+					hcs.trace({
+						endpoint: this,
+						state: 'open'
+					});
 					// immediate send current state
 					this.receive(hcs.isHealthy);
 
@@ -60,7 +81,12 @@ class ServiceHealthCheck extends Service {
 					};
 					hcs.addListener('serviceStateChanged', hcs._serviceStateChangedListener);
 				},
-				hasBeenDisConnected() {
+				willBeClosed() {
+					hcs.trace({
+						endpoint: this,
+						state: 'close'
+					});
+
 					hcs.removeListener('serviceStateChanged', hcs._serviceStateChangedListener);
 				}
 		});
@@ -70,13 +96,23 @@ class ServiceHealthCheck extends Service {
 		})).receive = request => Promise.resolve(this.isHealthy);
 
 		const sendUptime = new endpoint.SendEndpoint('uptime', this, {
-			hasBeenConnected() {
+			hasBeenOpened() {
+					hcs.trace({
+						endpoint: this,
+						state: 'open'
+					});
+
 					hcs._uptimeInterval = setInterval(() => {
 						this.receive(process.uptime() *
 							1000);
 					}, hcs.uptimeInterval * 1000);
 				},
-				hasBeenDisConnected() {
+				willBeClosed() {
+					hcs.trace({
+						endpoint: this,
+						state: 'close'
+					});
+
 					clearInterval(hcs._uptimeInterval);
 				}
 		});

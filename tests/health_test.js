@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, xit, before, beforeEach, after, afterEach */
 /* jslint node: true, esnext: true */
 
 'use strict';
@@ -34,6 +34,8 @@ describe('health check service', () => {
 
       const re = new endpoint.SendEndpoint('test', {
         name: 'a'
+      }, {
+        createOpposite: true
       });
 
       re.connected = hs.endpoints.memory;
@@ -50,6 +52,8 @@ describe('health check service', () => {
 
       const re = new endpoint.ReceiveEndpoint('test', {
         name: 'a'
+      }, {
+        createOpposite: true
       });
 
       let cpuUsage;
@@ -71,6 +75,8 @@ describe('health check service', () => {
 
       const re = new endpoint.ReceiveEndpoint('test', {
         name: 'a'
+      }, {
+        createOpposite: true
       });
 
       let theState = 77;
@@ -84,4 +90,30 @@ describe('health check service', () => {
       return hs.start().then(() => hs.endpoints.state.receive({}).then(r => assert.equal(theState, true)));
     })
   );
+
+  /*
+    it('uptime opposite', () =>
+      ServiceHealthCheck.registerWithManager(sp).then(() => {
+        const hs = sp.createServiceFactoryInstanceFromConfig({
+          type: 'health-check'
+        }, sp);
+
+        const re = new endpoint.ReceiveEndpoint('test', {
+          name: 'a'
+        }, {
+          createOpposite: true
+        });
+
+        let theState = 77;
+
+        hs.endpoints.uptime.opposite.connected = re;
+
+        re.receive = message => {
+          theState = message;
+        };
+
+        return hs.start().then(() => hs.endpoints.uptime.receive({}).then(r => assert.equal(theState, true)));
+      })
+    );
+  */
 });
