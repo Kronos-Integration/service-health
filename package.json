@@ -21,14 +21,14 @@
   },
   "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
-    "kronos-service": "^3.2.9"
+    "kronos-service": "^3.2.11"
   },
   "devDependencies": {
     "chai": "3.5.0",
     "cz-conventional-changelog": "1.1.6",
     "istanbul": "0.4.3",
     "jsdoc": "3.4.0",
-    "mocha": "2.4.5",
+    "mocha": "^2.5.2",
     "semantic-release": "6.2.2"
   },
   "contributors": [
