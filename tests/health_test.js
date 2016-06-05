@@ -19,19 +19,14 @@ const sp = new ServiceProvider();
 describe('health check service', () => {
   it('got state response', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
-      const hs = sp.createServiceFactoryInstanceFromConfig({
-        type: 'health-check'
-      }, sp);
+      const hs = sp.services['health-check'];
       return hs.start().then(() => hs.endpoints.state.receive({}).then(r => assert.equal(r, true)));
     })
   );
 
   it('memory', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
-      const hs = sp.createServiceFactoryInstanceFromConfig({
-        type: 'health-check'
-      }, sp);
-
+      const hs = sp.services['health-check'];
       const re = new endpoint.SendEndpoint('test', {
         name: 'a'
       }, {
@@ -46,10 +41,7 @@ describe('health check service', () => {
 
   it('cpu opposite', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
-      const hs = sp.createServiceFactoryInstanceFromConfig({
-        type: 'health-check'
-      }, sp);
-
+      const hs = sp.services['health-check'];
       const re = new endpoint.ReceiveEndpoint('test', {
         name: 'a'
       }, {
@@ -69,10 +61,7 @@ describe('health check service', () => {
 
   it('state opposite', () =>
     ServiceHealthCheck.registerWithManager(sp).then(() => {
-      const hs = sp.createServiceFactoryInstanceFromConfig({
-        type: 'health-check'
-      }, sp);
-
+      const hs = sp.services['health-check'];
       const re = new endpoint.ReceiveEndpoint('test', {
         name: 'a'
       }, {
@@ -94,9 +83,7 @@ describe('health check service', () => {
   /*
     it('uptime opposite', () =>
       ServiceHealthCheck.registerWithManager(sp).then(() => {
-        const hs = sp.createServiceFactoryInstanceFromConfig({
-          type: 'health-check'
-        }, sp);
+        const hs = sp.services['health-check'];
 
         const re = new endpoint.ReceiveEndpoint('test', {
           name: 'a'
