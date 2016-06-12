@@ -21,7 +21,7 @@ class ServiceHealthCheck extends Service {
 		const sendCPU = new endpoint.SendEndpoint('cpu', this, {
 			hasBeenOpened() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'open'
 					});
 					hcs._cpuInterval = setInterval(() => {
@@ -31,7 +31,7 @@ class ServiceHealthCheck extends Service {
 				},
 				willBeClosed() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'close'
 					});
 					clearInterval(hcs._cpuInterval);
@@ -46,7 +46,7 @@ class ServiceHealthCheck extends Service {
 		const sendMemory = new endpoint.SendEndpoint('memory', this, {
 			hasBeenOpened() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'open'
 					});
 					hcs._memoryInterval = setInterval(() => {
@@ -55,7 +55,7 @@ class ServiceHealthCheck extends Service {
 				},
 				willBeClosed() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'close'
 					});
 
@@ -70,7 +70,7 @@ class ServiceHealthCheck extends Service {
 		const sendState = new endpoint.SendEndpoint('state', this, {
 			hasBeenOpened() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'open'
 					});
 					// immediate send current state
@@ -83,7 +83,7 @@ class ServiceHealthCheck extends Service {
 				},
 				willBeClosed() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'close'
 					});
 
@@ -98,7 +98,7 @@ class ServiceHealthCheck extends Service {
 		const sendUptime = new endpoint.SendEndpoint('uptime', this, {
 			hasBeenOpened() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'open'
 					});
 
@@ -109,7 +109,7 @@ class ServiceHealthCheck extends Service {
 				},
 				willBeClosed() {
 					hcs.trace({
-						endpoint: this,
+						endpoint: this.identifier,
 						state: 'close'
 					});
 
