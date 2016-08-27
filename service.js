@@ -4,6 +4,7 @@
 
 const path = require('path'),
 	process = require('process'),
+	mat = require('model-attributes'),
 	Service = require('kronos-service').Service,
 	endpoint = require('kronos-endpoint');
 
@@ -12,6 +13,30 @@ const path = require('path'),
  * Currently we only check that there no service is in failed state
  */
 class ServiceHealthCheck extends Service {
+
+	static get name() {
+		return 'health-check';
+	}
+
+	static get configurationAttributes() {
+		return Object.assign(mat.createAttributes({
+			uptimeInterval: {
+				description: 'uptime endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
+			},
+			memoryInterval: {
+				description: 'memory endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
+			},
+			cpuInterval: {
+				description: 'cpu endpoint send interval (in seconds)',
+				default: 60,
+				type: 'duration'
+			}
+		}), Service.configurationAttributes);
+	}
 
 	constructor(config, owner) {
 		super(config, owner);
@@ -123,36 +148,9 @@ class ServiceHealthCheck extends Service {
 			1000);
 	}
 
-	static get name() {
-		return 'health-check';
-	}
-
-	get type() {
-		return ServiceHealthCheck.name;
-	}
 
 	get autostart() {
 		return true;
-	}
-
-	get configurationAttributes() {
-		return Object.assign({
-			uptimeInterval: {
-				description: 'uptime endpoint send interval (in seconds)',
-				default: 60,
-				type: 'duration'
-			},
-			memoryInterval: {
-				description: 'memory endpoint send interval (in seconds)',
-				default: 60,
-				type: 'duration'
-			},
-			cpuInterval: {
-				description: 'cpu endpoint send interval (in seconds)',
-				default: 60,
-				type: 'duration'
-			}
-		}, super.configurationAttributes);
 	}
 
 	get isHealthy() {
