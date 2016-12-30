@@ -3,10 +3,20 @@
 'use strict';
 
 const path = require('path'),
-	process = require('process'),
-	mat = require('model-attributes'),
-	Service = require('kronos-service').Service,
-	endpoint = require('kronos-endpoint');
+	process = require('process');
+
+import {
+	createAttributes
+}
+from 'model-attributes';
+import {
+	Service
+}
+from 'kronos-service';
+import {
+	SendEndpoint, ReceiveEndpoint
+}
+from 'kronos-endpoint';
 
 /**
  * Collects health state form all components
@@ -19,7 +29,7 @@ class ServiceHealthCheck extends Service {
 	}
 
 	static get configurationAttributes() {
-		return Object.assign(mat.createAttributes({
+		return Object.assign(createAttributes({
 			uptimeInterval: {
 				description: 'uptime endpoint send interval (in seconds)',
 				default: 60,
@@ -43,7 +53,7 @@ class ServiceHealthCheck extends Service {
 
 		const hcs = this;
 
-		const sendCPU = new endpoint.SendEndpoint('cpu', this, {
+		const sendCPU = new SendEndpoint('cpu', this, {
 			hasBeenOpened() {
 					hcs.trace({
 						endpoint: this.identifier,
@@ -63,12 +73,12 @@ class ServiceHealthCheck extends Service {
 				}
 		});
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('cpu', this, {
+		this.addEndpoint(new ReceiveEndpoint('cpu', this, {
 			opposite: sendCPU
 		})).receive = request => Promise.resolve(process.cpuUsage());
 
 
-		const sendMemory = new endpoint.SendEndpoint('memory', this, {
+		const sendMemory = new SendEndpoint('memory', this, {
 			hasBeenOpened() {
 					hcs.trace({
 						endpoint: this.identifier,
@@ -88,11 +98,11 @@ class ServiceHealthCheck extends Service {
 				}
 		});
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('memory', this, {
+		this.addEndpoint(new ReceiveEndpoint('memory', this, {
 			opposite: sendMemory
 		})).receive = request => Promise.resolve(process.memoryUsage());
 
-		const sendState = new endpoint.SendEndpoint('state', this, {
+		const sendState = new SendEndpoint('state', this, {
 			hasBeenOpened() {
 					hcs.trace({
 						endpoint: this.identifier,
@@ -116,11 +126,11 @@ class ServiceHealthCheck extends Service {
 				}
 		});
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('state', this, {
+		this.addEndpoint(new ReceiveEndpoint('state', this, {
 			opposite: sendState
 		})).receive = request => Promise.resolve(this.isHealthy);
 
-		const sendUptime = new endpoint.SendEndpoint('uptime', this, {
+		const sendUptime = new SendEndpoint('uptime', this, {
 			hasBeenOpened() {
 					hcs.trace({
 						endpoint: this.identifier,
@@ -142,7 +152,7 @@ class ServiceHealthCheck extends Service {
 				}
 		});
 
-		this.addEndpoint(new endpoint.ReceiveEndpoint('uptime', this, {
+		this.addEndpoint(new ReceiveEndpoint('uptime', this, {
 			opposite: sendUptime
 		})).receive = request => Promise.resolve(process.uptime() *
 			1000);
@@ -160,9 +170,15 @@ class ServiceHealthCheck extends Service {
 	}
 }
 
-module.exports.registerWithManager = manager =>
-	manager.registerServiceFactory(ServiceHealthCheck).then(sf =>
+function registerWithManager(manager) {
+	return manager.registerServiceFactory(ServiceHealthCheck).then(sr =>
 		manager.declareService({
-			type: sf.name,
-			name: sf.name
+			type: sr.name,
+			name: sr.name
 		}));
+}
+
+export {
+	ServiceHealthCheck,
+	registerWithManager
+};
