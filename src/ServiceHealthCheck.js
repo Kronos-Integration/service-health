@@ -6,7 +6,7 @@ const path = require('path'),
 	process = require('process');
 
 import {
-	createAttributes
+	createAttributes, mergeAttributes
 }
 from 'model-attributes';
 import {
@@ -29,7 +29,7 @@ class ServiceHealthCheck extends Service {
 	}
 
 	static get configurationAttributes() {
-		return Object.assign(createAttributes({
+		return mergeAttributes(createAttributes({
 			uptimeInterval: {
 				description: 'uptime endpoint send interval (in seconds)',
 				default: 60,
