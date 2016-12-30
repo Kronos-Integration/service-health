@@ -5,13 +5,13 @@
   "keywords": [
     "kronos-service"
   ],
-  "main": "service.js",
+  "main": "dist/module.js",
+  "module": "src/ServiceHealthCheck.js",
   "scripts": {
     "cover": "npm run build && node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -u exports tests/*_test.js",
-    "doc": "./node_modules/.bin/jsdoc lib/*.js",
     "test": "npm run build && node_modules/.bin/mocha tests/*_test.js && markdown-doctest",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "build": "node_modules/rollup/bin/rollup --output=service.js -c -- {{module}}",
+    "build": "node_modules/rollup/bin/rollup --output=dist/module.js -c -- src/ServiceHealthCheck.js",
     "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js > README.md"
   },
   "repository": {
@@ -23,30 +23,26 @@
   },
   "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
-    "kronos-service": "^4.1.6",
+    "kronos-service": "^4.2.0",
     "model-attributes": "^2.2.16"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "cz-conventional-changelog": "^1.2.0",
     "istanbul": "^0.4.5",
-    "jsdoc": "^3.4.3",
     "mocha": "^3.2.0",
     "semantic-release": "^6.3.5",
     "jsdoc-to-markdown": "^2.0.1",
     "markdown-doctest": "^0.9.1",
     "rollup": "^0.39.0"
   },
-  "contributors": [
-    {
-      "name": "Torsten Link",
-      "email": "torstenlink@gmx.de"
-    },
-    {
-      "name": "Markus Felten",
-      "email": "markus.felten@gmx.de"
-    }
-  ],
+  "contributors": [{
+    "name": "Torsten Link",
+    "email": "torstenlink@gmx.de"
+  }, {
+    "name": "Markus Felten",
+    "email": "markus.felten@gmx.de"
+  }],
   "license": "BSD-2-Clause",
   "engines": {
     "node": ">=6.9.2"
