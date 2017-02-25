@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
-    "kronos-service": "^4.5.2",
-    "model-attributes": "^3.0.3"
+    "kronos-service": "^4.5.4",
+    "model-attributes": "^3.0.7"
   },
   "devDependencies": {
     "chai": "^3.5.0",
