@@ -1,57 +1,50 @@
 {
   "name": "kronos-service-health-check",
-  "version": "0.0.0-semantic-release",
-  "description": "collects and reports system health status",
-  "keywords": [
-    "kronos-service"
-  ],
-  "main": "dist/module.js",
-  "module": "src/ServiceHealthCheck.js",
   "scripts": {
+    "precover": "npm run prepublish",
     "cover": "nyc npm test",
-    "test": "mocha tests/*_test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
-    "prepublish": "rollup --output=dist/module.js -c -- src/ServiceHealthCheck.js",
     "pretest": "npm run prepublish",
+    "test": "mocha tests/*_test.js",
     "posttest": "markdown-doctest",
-    "precover": "npm run prepublish"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Kronos-Integration/kronos-service-health-check.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
-  },
-  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
-  "dependencies": {
-    "kronos-service": "^4.5.5",
-    "model-attributes": "^3.0.10"
+    "prepublish": "rollup --output=dist/index.js -c -- {{module}}",
+    "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
     "jsdoc-to-markdown": "^3.0.0",
     "markdown-doctest": "^0.9.1",
+    "chai": "^4.1.0",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
     "rollup": "^0.45.1",
     "semantic-release": "^6.3.6"
   },
+  "engines": {
+    "node": ">=8.1.4"
+  },
+  "version": "0.0.0-semantic-release",
+  "description": "{{description}}",
+  "main": "dist/index.js",
+  "keywords": [
+    "npm-package-template",
+    "kronos-service"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
+  },
+  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
+  "dependencies": {},
   "contributors": [
-    {
-      "name": "Torsten Link",
-      "email": "torstenlink@gmx.de"
-    },
     {
       "name": "Markus Felten",
       "email": "markus.felten@gmx.de"
     }
   ],
   "license": "BSD-2-Clause",
-  "engines": {
-    "node": ">=8.1.4"
-  },
   "nyc": {
     "include": [
       "dist/**/*.js"
