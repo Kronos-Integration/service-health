@@ -5,8 +5,8 @@
   "keywords": [
     "kronos-service"
   ],
-  "main": "dist/module.js",
-  "module": "src/ServiceHealthCheck.js",
+  "main": "dist/service-health-check.js",
+  "module": "src/service-health-check.js",
   "scripts": {
     "cover": "nyc npm test",
     "test": "mocha tests/*-test.js",
