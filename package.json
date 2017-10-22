@@ -2,15 +2,14 @@
   "name": "kronos-service-health-check",
   "version": "0.0.0-semantic-release",
   "description": "collects and reports system health status",
-  "keywords": [
-    "kronos-service"
-  ],
+  "keywords": ["kronos-service"],
   "main": "dist/service-health-check.js",
   "module": "src/service-health-check.js",
   "scripts": {
     "cover": "nyc npm test",
     "test": "mocha tests/*-test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release":
+      "semantic-release pre && npm publish && semantic-release post",
     "docs": "jsdoc2md -l off -t doc/README.hbs -f src/*.js >README.md",
     "pretest": "rollup -c",
     "posttest": "markdown-doctest",
@@ -19,12 +18,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
+    "url":
+      "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
   },
   "bugs": {
-    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
+    "url":
+      "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
   },
-  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
+  "homepage":
+    "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
     "kronos-service": "^4.8.2",
     "model-attributes": "^3.0.10"
@@ -36,7 +38,7 @@
     "mocha": "^3.5.3",
     "nyc": "^11.2.1",
     "rollup": "^0.50.0",
-    "semantic-release": "^8.0.4"
+    "semantic-release": "^8.2.1"
   },
   "contributors": [
     {
@@ -50,15 +52,11 @@
   ],
   "license": "BSD-2-Clause",
   "engines": {
-    "node": ">=8.6.0"
+    "node": ">=8.7.0"
   },
   "nyc": {
-    "include": [
-      "dist/**/*.js"
-    ],
-    "reporter": [
-      "lcov"
-    ],
+    "include": ["dist/**/*.js"],
+    "reporter": ["lcov"],
     "report-dir": "./coverage"
   },
   "template": {
