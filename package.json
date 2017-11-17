@@ -2,15 +2,16 @@
   "name": "kronos-service-health-check",
   "version": "0.0.0-semantic-release",
   "description": "collects and reports system health status",
-  "keywords": ["kronos-service"],
+  "keywords": [
+    "kronos-service"
+  ],
   "main": "dist/service-health-check.js",
   "module": "src/service-health-check.js",
   "scripts": {
     "cover": "nyc --temp-directory build/nyc ava",
     "test": "ava",
     "semantic-release": "semantic-release",
-    "docs":
-      "jsdoc2md --configure doc/jsdoc.json -l off -t doc/README.hbs -f src/*.js >README.md",
+    "docs": "jsdoc2md --configure doc/jsdoc.json -l off -t doc/README.hbs -f src/*.js >README.md",
     "pretest": "rollup -c tests/rollup.config.js",
     "posttest": "npm run prepare && markdown-doctest",
     "precover": "rollup -c tests/rollup.config.js",
@@ -18,15 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url":
-      "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
+    "url": "git+https://github.com/Kronos-Integration/kronos-service-health-check.git"
   },
   "bugs": {
-    "url":
-      "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
+    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
   },
-  "homepage":
-    "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
+  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
   "dependencies": {
     "kronos-service": "^4.8.2",
     "model-attributes": "^3.0.10"
@@ -39,7 +37,6 @@
     "semantic-release": "^9.1.1",
     "jsdoc-babel": "^0.3.0",
     "ava": "^0.23.0",
-    "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-multi-entry": "^2.0.2",
     "babel-preset-env": "^1.6.1",
     "xo": "^0.19.0"
@@ -59,8 +56,13 @@
     "node": ">=8.9.1"
   },
   "nyc": {
-    "include": ["build/*-test.js", "src/**/*.js"],
-    "reporter": ["lcov"],
+    "include": [
+      "build/*-test.js",
+      "src/**/*.js"
+    ],
+    "reporter": [
+      "lcov"
+    ],
     "report-dir": "./build/coverage"
   },
   "template": {
@@ -72,8 +74,14 @@
     "space": true
   },
   "ava": {
-    "files": ["build/*-test.js"],
-    "presets": ["env"],
-    "require": ["babel-register"]
+    "files": [
+      "build/*-test.js"
+    ],
+    "presets": [
+      "env"
+    ],
+    "require": [
+      "babel-register"
+    ]
   }
 }
