@@ -1,135 +1,131 @@
-/* global describe, it, xit, before, beforeEach, after, afterEach */
-/* jslint node: true, esnext: true */
-
-'use strict';
-
-const chai = require('chai'),
-  assert = chai.assert,
-  expect = chai.expect,
-  should = chai.should(),
-  { SendEndpoint, ReceiveEndpoint } = require('kronos-endpoint'),
-  { Service, ServiceProviderMixin } = require('kronos-service'),
-  {
-    ServiceHealthCheck,
-    registerWithManager
-  } = require('../dist/service-health-check.js');
+import { SendEndpoint, ReceiveEndpoint } from 'kronos-endpoint';
+import { Service, ServiceProviderMixin } from 'kronos-service';
+import {
+  ServiceHealthCheck,
+  registerWithManager
+} from '../src/service-health-check.js';
+import test from 'ava';
 
 class ServiceProvider extends ServiceProviderMixin(Service) {}
-const sp = new ServiceProvider();
 
-describe('health check service', () => {
-  it('got state response', () =>
-    registerWithManager(sp).then(() => {
-      const hs = sp.services['health-check'];
-      return hs
-        .start()
-        .then(() =>
-          hs.endpoints.state.receive({}).then(r => assert.equal(r, true))
-        );
-    }));
+test('got state response', async t => {
+  const sp = new ServiceProvider();
+  await registerWithManager(sp);
+  const hs = sp.services['health-check'];
+  await hs.start();
+  const r = await hs.endpoints.state.receive();
+  t.is(r, true);
+});
 
-  it('memory', () =>
-    registerWithManager(sp).then(() => {
-      const hs = sp.services['health-check'];
-      const re = new SendEndpoint(
-        'test',
-        {
-          name: 'a'
-        },
-        {
-          createOpposite: true
-        }
-      );
+test('got memory response', async t => {
+  const sp = new ServiceProvider();
+  await registerWithManager(sp);
+  const hs = sp.services['health-check'];
 
-      re.connected = hs.endpoints.memory;
+  const re = new SendEndpoint(
+    'test',
+    {
+      name: 'a'
+    },
+    {
+      createOpposite: true
+    }
+  );
+  re.connected = hs.endpoints.memory;
 
-      return hs
-        .start()
-        .then(() =>
-          re
-            .receive({})
-            .then(response => assert.isAbove(response.heapTotal, 10000))
-        );
-    }));
+  await hs.start();
 
-  it('cpu opposite', () =>
-    registerWithManager(sp).then(() => {
-      const hs = sp.services['health-check'];
-      const re = new ReceiveEndpoint(
-        'test',
-        {
-          name: 'a'
-        },
-        {
-          createOpposite: true
-        }
-      );
+  const r = await re.receive();
 
-      let cpuUsage;
-      re.receive = message => {
-        cpuUsage = message;
-      };
+  t.is(r.heapTotal > 0, true);
+});
 
-      hs.endpoints.cpu.opposite.connected = re;
+test('cpu opposite response', async t => {
+  const sp = new ServiceProvider();
+  await registerWithManager(sp);
+  const hs = sp.services['health-check'];
 
-      return hs
-        .start()
-        .then(() =>
-          hs.endpoints.cpu
-            .receive({})
-            .then(r => assert.isAbove(cpuUsage.user, 100))
-        );
-    }));
+  const re = new ReceiveEndpoint(
+    'test',
+    {
+      name: 'a'
+    },
+    {
+      createOpposite: true
+    }
+  );
 
-  it('state opposite', () =>
-    registerWithManager(sp).then(() => {
-      const hs = sp.services['health-check'];
-      const re = new ReceiveEndpoint(
-        'test',
-        {
-          name: 'a'
-        },
-        {
-          createOpposite: true
-        }
-      );
+  let cpuUsage;
+  re.receive = message => {
+    cpuUsage = message;
+  };
 
-      let theState = 77;
+  hs.endpoints.cpu.opposite.connected = re;
 
-      re.receive = message => {
-        theState = message;
-      };
+  await hs.start();
 
-      hs.endpoints.state.opposite.connected = re;
+  const r = await hs.endpoints.cpu.receive();
 
-      return hs
-        .start()
-        .then(() =>
-          hs.endpoints.state.receive({}).then(r => assert.equal(theState, true))
-        );
-    }));
+  t.is(r.user > 0, true);
+});
 
-  /*
-    it('uptime opposite', () =>
-      ServiceHealthCheck.registerWithManager(sp).then(() => {
-        const hs = sp.services['health-check'];
+test('state opposite response', async t => {
+  const sp = new ServiceProvider();
+  await registerWithManager(sp);
+  const hs = sp.services['health-check'];
 
-        const re = new endpoint.ReceiveEndpoint('test', {
-          name: 'a'
-        }, {
-          createOpposite: true
-        });
+  const re = new ReceiveEndpoint(
+    'test',
+    {
+      name: 'a'
+    },
+    {
+      createOpposite: true
+    }
+  );
 
-        let theState = 77;
+  let theState = 77;
 
-        hs.endpoints.uptime.opposite.connected = re;
+  re.receive = message => {
+    theState = message;
+  };
 
-        re.receive = message => {
-          theState = message;
-        };
+  hs.endpoints.state.opposite.connected = re;
 
-        return hs.start().then(() => hs.endpoints.uptime.receive({}).then(r => assert.equal(theState, true)));
-      })
-    );
-  */
+  await hs.start();
+
+  const r = await hs.endpoints.state.receive();
+
+  t.is(r, true);
+});
+
+test.skip('uptime opposite response', async t => {
+  const sp = new ServiceProvider();
+  await registerWithManager(sp);
+  const hs = sp.services['health-check'];
+
+  const re = new ReceiveEndpoint(
+    'test',
+    {
+      name: 'a'
+    },
+    {
+      createOpposite: true
+    }
+  );
+
+  let theState = 77;
+
+  re.receive = message => {
+    theState = message;
+  };
+
+  hs.endpoints.uptime.opposite.connected = re;
+
+  await hs.start();
+
+  const r = await hs.endpoints.uptime.receive();
+  console.log(r);
+
+  t.is(theState, true);
 });
