@@ -7,7 +7,7 @@ import { SendEndpoint, ReceiveEndpoint } from 'kronos-endpoint';
 
 /**
  * Collects health state form all components
- * Currently we only check that there no service is in failed state
+ * Currently we only check that there are no service is in failed state
  */
 export class ServiceHealthCheck extends Service {
   static get name() {
