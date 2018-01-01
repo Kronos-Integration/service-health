@@ -27,6 +27,8 @@ collects and reports system health status
 ### Table of Contents
 
 -   [ServiceHealthCheck](#servicehealthcheck)
+    -   [autostart](#autostart)
+    -   [name](#name)
 
 ## ServiceHealthCheck
 
@@ -39,6 +41,16 @@ Currently we only check that there are no service is in failed state
 
 -   `config`  
 -   `owner`  
+
+### autostart
+
+Start immediate
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true
+
+### name
+
+Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 'health-check'
 
 # install
 

@@ -24,9 +24,7 @@ test('got memory response', async t => {
 
   const re = new SendEndpoint(
     'test',
-    {
-      name: 'a'
-    },
+    {},
     {
       createOpposite: true
     }
@@ -47,9 +45,7 @@ test('cpu opposite response', async t => {
 
   const re = new ReceiveEndpoint(
     'test',
-    {
-      name: 'a'
-    },
+    {},
     {
       createOpposite: true
     }
@@ -76,9 +72,7 @@ test('state opposite response', async t => {
 
   const re = new ReceiveEndpoint(
     'test',
-    {
-      name: 'a'
-    },
+    {},
     {
       createOpposite: true
     }
@@ -86,9 +80,7 @@ test('state opposite response', async t => {
 
   let theState = 77;
 
-  re.receive = message => {
-    theState = message;
-  };
+  re.receive = message => (theState = message);
 
   hs.endpoints.state.opposite.connected = re;
 
@@ -99,33 +91,27 @@ test('state opposite response', async t => {
   t.is(r, true);
 });
 
-test.skip('uptime opposite response', async t => {
+test('uptime opposite response', async t => {
   const sp = new ServiceProvider();
   await registerWithManager(sp);
   const hs = sp.services['health-check'];
 
   const re = new ReceiveEndpoint(
     'test',
-    {
-      name: 'a'
-    },
+    {},
     {
       createOpposite: true
     }
   );
 
-  let theState = 77;
+  let oppositeUptime = -1;
 
-  re.receive = message => {
-    theState = message;
-  };
+  re.receive = message => (oppositeUptime = message);
 
   hs.endpoints.uptime.opposite.connected = re;
 
   await hs.start();
 
-  const r = await hs.endpoints.uptime.receive();
-  console.log(r);
-
-  t.is(theState, true);
+  const uptimeResponse = await hs.endpoints.uptime.receive();
+  t.is(oppositeUptime, uptimeResponse);
 });

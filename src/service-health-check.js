@@ -10,9 +10,34 @@ import { SendEndpoint, ReceiveEndpoint } from 'kronos-endpoint';
  * Currently we only check that there are no service is in failed state
  */
 export class ServiceHealthCheck extends Service {
+  /**
+   * @return {string} 'health-check'
+   */
   static get name() {
     return 'health-check';
   }
+
+  /*
+  static get endpoints() {
+    return Object.assign(
+      {
+        cpu: {
+          in: true
+        },
+        memory: {
+          in: true
+        },
+        state: {
+          in: true
+        },
+        uptime: {
+          in: true
+        }
+      },
+      Service.endpoints
+    );
+  }
+*/
 
   static get configurationAttributes() {
     return mergeAttributes(
@@ -137,9 +162,12 @@ export class ServiceHealthCheck extends Service {
           state: 'open'
         });
 
-        hcs._uptimeInterval = setInterval(() => {
-          this.receive(process.uptime() * 1000);
-        }, hcs.uptimeInterval * 1000);
+        this.receive(process.uptime() * 1000);
+
+        hcs._uptimeInterval = setInterval(
+          () => this.receive(process.uptime() * 1000),
+          hcs.uptimeInterval * 1000
+        );
       },
       willBeClosed() {
         hcs.trace({
@@ -158,6 +186,10 @@ export class ServiceHealthCheck extends Service {
     ).receive = request => Promise.resolve(process.uptime() * 1000);
   }
 
+  /**
+   * Start immediate
+   * @return {boolean} true
+   */
   get autostart() {
     return true;
   }
