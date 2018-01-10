@@ -113,5 +113,5 @@ test('uptime opposite response', async t => {
   await hs.start();
 
   const uptimeResponse = await hs.endpoints.uptime.receive();
-  t.is(oppositeUptime, uptimeResponse);
+  t.is(Math.abs(oppositeUptime - uptimeResponse) < 10, true);
 });
