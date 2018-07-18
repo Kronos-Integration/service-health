@@ -9,7 +9,8 @@ export default {
   output: {
     file: 'build/bundle-test.js',
     format: 'cjs',
-    sourcemap: true
+    sourcemap: true,
+    interop: false
   },
   external: ['ava', 'kronos-service', 'model-attributes', 'kronos-endpoint'],
   plugins: [multiEntry(), istanbul({
