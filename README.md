@@ -7,7 +7,6 @@
 [![Coverage Status](https://coveralls.io/repos/Kronos-Integration/kronos-service-health-check/badge.svg)](https://coveralls.io/r/Kronos-Integration/kronos-service-health-check)
 [![Known Vulnerabilities](https://snyk.io/test/github/Kronos-Integration/kronos-service-health-check/badge.svg)](https://snyk.io/test/github/Kronos-Integration/kronos-service-health-check)
 [![GitHub Issues](https://img.shields.io/github/issues/Kronos-Integration/kronos-service-health-check.svg?style=flat-square)](https://github.com/Kronos-Integration/kronos-service-health-check/issues)
-[![Stories in Ready](https://badge.waffle.io/Kronos-Integration/kronos-service-health-check.svg?label=ready&title=Ready)](http://waffle.io/Kronos-Integration/kronos-service-health-check)
 [![Dependency Status](https://david-dm.org/Kronos-Integration/kronos-service-health-check.svg)](https://david-dm.org/Kronos-Integration/kronos-service-health-check)
 [![devDependency Status](https://david-dm.org/Kronos-Integration/kronos-service-health-check/dev-status.svg)](https://david-dm.org/Kronos-Integration/kronos-service-health-check#info=devDependencies)
 [![docs](http://inch-ci.org/github/Kronos-Integration/kronos-service-health-check.svg?branch=master)](http://inch-ci.org/github/Kronos-Integration/kronos-service-health-check)
