@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "kronos-service": "^4.16.0",
-    "model-attributes": "^3.0.10"
+    "model-attributes": "^4.0.0"
   },
   "devDependencies": {
     "ava": "^2.2.0",
