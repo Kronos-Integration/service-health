@@ -1,11 +1,11 @@
 {
-  "name": "kronos-service-health-check",
+  "name": "@kronos--integration/service-health-check",
   "version": "0.0.0-semantic-release",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/service-health-check.js",
-  "module": "src/service-health-check.js",
+  "main": "src/service-health-check.mjs",
+  "module": "src/service-health-check.mjs",
   "description": "collects and reports system health status",
   "keywords": [
     "kronos-service"
@@ -23,14 +23,13 @@
   "license": "BSD-2-Clause",
   "scripts": {
     "cover": "c8 -x 'tests/**/*.mjs' --temp-directory build/tmp ava && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
-    "docs": "documentation readme src/service-health-check.js --section=API",
-    "lint": "documentation lint src/service-health-check.js",
-    "posttest": "npm run prepare && markdown-doctest",
-    "prepare": "rollup -c",
+    "docs": "documentation readme src/service-health-check.mjs --section=API",
+    "lint": "documentation lint src/service-health-check.mjs",
+    "posttest": "markdown-doctest",
     "test": "ava"
   },
   "dependencies": {
-    "kronos-service": "^4.16.0",
+    "@kronos--integration/service": "^5.0.0",
     "model-attributes": "^4.0.0"
   },
   "devDependencies": {
@@ -40,12 +39,6 @@
     "documentation": "^12.1.2",
     "esm": "^3.2.25",
     "markdown-doctest": "^1.0.0",
-    "rollup": "^1.25.1",
-    "rollup-plugin-cleanup": "^3.1.1",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-executable": "^1.5.1",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "semantic-release": "^15.13.27"
   },
   "engines": {
