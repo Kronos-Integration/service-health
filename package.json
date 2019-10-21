@@ -1,5 +1,5 @@
 {
-  "name": "@kronos--integration/service-health-check",
+  "name": "@kronos-integration/service-health-check",
   "version": "0.0.0-semantic-release",
   "type": "module",
   "publishConfig": {
