@@ -1,9 +1,9 @@
-import { SendEndpoint, ReceiveEndpoint } from 'kronos-endpoint';
-import { Service, ServiceProviderMixin } from 'kronos-service';
+import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
+import { Service, ServiceProviderMixin } from '@kronos-integration/service';
 import {
   ServiceHealthCheck,
   registerWithManager
-} from '../src/service-health-check.js';
+} from '../src/service-health-check.mjs';
 import test from 'ava';
 
 class ServiceProvider extends ServiceProviderMixin(Service) {}

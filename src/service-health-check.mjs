@@ -1,9 +1,7 @@
-const path = require('path'),
-  process = require('process');
-
+import process from 'process';
 import { createAttributes, mergeAttributes } from 'model-attributes';
-import { Service } from 'kronos-service';
-import { SendEndpoint, ReceiveEndpoint } from 'kronos-endpoint';
+import { Service } from '@kronos-integration/service';
+import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
 
 /**
  * Collects health state form all components
