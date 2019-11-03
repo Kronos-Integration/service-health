@@ -1,17 +1,15 @@
 import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
 import { Service, ServiceProviderMixin } from '@kronos-integration/service';
-import {
-  ServiceHealthCheck,
-  registerWithManager
-} from '../src/service-health-check.mjs';
+import ServiceHealthCheck from '../src/service-health-check.mjs';
 import test from 'ava';
 
 class ServiceProvider extends ServiceProviderMixin(Service) {}
 
 test('got state response', async t => {
   const sp = new ServiceProvider();
-  await registerWithManager(sp);
-  const hs = sp.services['health-check'];
+  sp.registerServiceFactory(ServiceHealthCheck);
+  const hs = await sp.declareService({ type: 'health-check'});
+
   await hs.start();
   const r = await hs.endpoints.state.receive();
   t.is(r, true);
@@ -19,8 +17,8 @@ test('got state response', async t => {
 
 test('got memory response', async t => {
   const sp = new ServiceProvider();
-  await registerWithManager(sp);
-  const hs = sp.services['health-check'];
+  sp.registerServiceFactory(ServiceHealthCheck);
+  const hs = await sp.declareService({ type: 'health-check'});
 
   const re = new SendEndpoint(
     'test',
@@ -40,8 +38,8 @@ test('got memory response', async t => {
 
 test('cpu opposite response', async t => {
   const sp = new ServiceProvider();
-  await registerWithManager(sp);
-  const hs = sp.services['health-check'];
+  sp.registerServiceFactory(ServiceHealthCheck);
+  const hs = await sp.declareService({ type: 'health-check'});
 
   const re = new ReceiveEndpoint(
     'test',
@@ -67,8 +65,8 @@ test('cpu opposite response', async t => {
 
 test('state opposite response', async t => {
   const sp = new ServiceProvider();
-  await registerWithManager(sp);
-  const hs = sp.services['health-check'];
+  sp.registerServiceFactory(ServiceHealthCheck);
+  const hs = await sp.declareService({ type: 'health-check'});
 
   const re = new ReceiveEndpoint(
     'test',
@@ -93,8 +91,8 @@ test('state opposite response', async t => {
 
 test('uptime opposite response', async t => {
   const sp = new ServiceProvider();
-  await registerWithManager(sp);
-  const hs = sp.services['health-check'];
+  sp.registerServiceFactory(ServiceHealthCheck);
+  const hs = await sp.declareService({ type: 'health-check'});
 
   const re = new ReceiveEndpoint(
     'test',

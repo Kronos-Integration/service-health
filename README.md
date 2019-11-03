@@ -24,6 +24,7 @@ collects and reports system health status
 ### Table of Contents
 
 -   [ServiceHealthCheck](#servicehealthcheck)
+    -   [Parameters](#parameters)
     -   [autostart](#autostart)
     -   [name](#name)
 
@@ -34,7 +35,7 @@ collects and reports system health status
 Collects health state form all components
 Currently we only check that there are no service is in failed state
 
-**Parameters**
+### Parameters
 
 -   `config`  
 -   `owner`  

@@ -7,7 +7,7 @@ import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
  * Collects health state form all components
  * Currently we only check that there are no service is in failed state
  */
-export class ServiceHealthCheck extends Service {
+export default class ServiceHealthCheck extends Service {
   /**
    * @return {string} 'health-check'
    */
@@ -199,13 +199,4 @@ export class ServiceHealthCheck extends Service {
     );
     return failedService ? false : true;
   }
-}
-
-export function registerWithManager(manager) {
-  return manager.registerServiceFactory(ServiceHealthCheck).then(sr =>
-    manager.declareService({
-      type: sr.name,
-      name: sr.name
-    })
-  );
 }
