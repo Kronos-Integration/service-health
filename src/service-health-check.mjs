@@ -17,8 +17,8 @@ export default class ServiceHealthCheck extends Service {
 
   /*
   static get endpoints() {
-    return Object.assign(
-      {
+      return {
+      ...super.endpoints,
         cpu: {
           in: true
         },
@@ -31,10 +31,7 @@ export default class ServiceHealthCheck extends Service {
         uptime: {
           in: true
         }
-      },
-      Service.endpoints
-    );
-  }
+    };
 */
 
   static get configurationAttributes() {
@@ -89,7 +86,7 @@ export default class ServiceHealthCheck extends Service {
       new ReceiveEndpoint('cpu', this, {
         opposite: sendCPU
       })
-    ).receive = request => Promise.resolve(process.cpuUsage());
+    ).receive = async request => process.cpuUsage();
 
     const sendMemory = new SendEndpoint('memory', this, {
       hasBeenOpened() {
@@ -115,7 +112,7 @@ export default class ServiceHealthCheck extends Service {
       new ReceiveEndpoint('memory', this, {
         opposite: sendMemory
       })
-    ).receive = request => Promise.resolve(process.memoryUsage());
+    ).receive = async request => process.memoryUsage();
 
     const sendState = new SendEndpoint('state', this, {
       hasBeenOpened() {
@@ -151,7 +148,7 @@ export default class ServiceHealthCheck extends Service {
       new ReceiveEndpoint('state', this, {
         opposite: sendState
       })
-    ).receive = request => Promise.resolve(this.isHealthy);
+    ).receive = request => this.isHealthy;
 
     const sendUptime = new SendEndpoint('uptime', this, {
       hasBeenOpened() {
@@ -181,7 +178,7 @@ export default class ServiceHealthCheck extends Service {
       new ReceiveEndpoint('uptime', this, {
         opposite: sendUptime
       })
-    ).receive = request => Promise.resolve(process.uptime() * 1000);
+    ).receive = request => process.uptime() * 1000;
   }
 
   /**
