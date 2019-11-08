@@ -1,7 +1,7 @@
-import process from 'process';
-import { createAttributes, mergeAttributes } from 'model-attributes';
-import { Service } from '@kronos-integration/service';
-import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
+import process from "process";
+import { createAttributes, mergeAttributes } from "model-attributes";
+import { Service } from "@kronos-integration/service";
+import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
 
 /**
  * Collects health state form all components
@@ -12,45 +12,47 @@ export default class ServiceHealthCheck extends Service {
    * @return {string} 'health-check'
    */
   static get name() {
-    return 'health-check';
+    return "health-check";
   }
 
   /*
   static get endpoints() {
-      return {
+    return {
       ...super.endpoints,
-        cpu: {
-          in: true
-        },
-        memory: {
-          in: true
-        },
-        state: {
-          in: true
-        },
-        uptime: {
-          in: true
-        }
+      cpu: {
+        in: true
+      },
+      memory: {
+        in: true
+      },
+      state: {
+        in: true,
+        receive: 'isHealthy'
+      },
+      uptime: {
+        in: true
+      }
     };
+  }
 */
 
   static get configurationAttributes() {
     return mergeAttributes(
       createAttributes({
         uptimeInterval: {
-          description: 'uptime endpoint send interval (in seconds)',
+          description: "uptime endpoint send interval (in seconds)",
           default: 60,
-          type: 'duration'
+          type: "duration"
         },
         memoryInterval: {
-          description: 'memory endpoint send interval (in seconds)',
+          description: "memory endpoint send interval (in seconds)",
           default: 60,
-          type: 'duration'
+          type: "duration"
         },
         cpuInterval: {
-          description: 'cpu endpoint send interval (in seconds)',
+          description: "cpu endpoint send interval (in seconds)",
           default: 60,
-          type: 'duration'
+          type: "duration"
         }
       }),
       Service.configurationAttributes
@@ -62,11 +64,11 @@ export default class ServiceHealthCheck extends Service {
 
     const hcs = this;
 
-    const sendCPU = new SendEndpoint('cpu', this, {
+    const sendCPU = new SendEndpoint("cpu", this, {
       hasBeenOpened() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'open'
+          state: "open"
         });
         hcs._cpuInterval = setInterval(() => {
           this.receive(process.cpuUsage());
@@ -76,23 +78,23 @@ export default class ServiceHealthCheck extends Service {
       willBeClosed() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'close'
+          state: "close"
         });
         clearInterval(hcs._cpuInterval);
       }
     });
 
     this.addEndpoint(
-      new ReceiveEndpoint('cpu', this, {
+      new ReceiveEndpoint("cpu", this, {
         opposite: sendCPU
       })
     ).receive = async request => process.cpuUsage();
 
-    const sendMemory = new SendEndpoint('memory', this, {
+    const sendMemory = new SendEndpoint("memory", this, {
       hasBeenOpened() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'open'
+          state: "open"
         });
         hcs._memoryInterval = setInterval(() => {
           this.receive(process.memoryUsage());
@@ -101,7 +103,7 @@ export default class ServiceHealthCheck extends Service {
       willBeClosed() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'close'
+          state: "close"
         });
 
         clearInterval(hcs._memoryInterval);
@@ -109,16 +111,16 @@ export default class ServiceHealthCheck extends Service {
     });
 
     this.addEndpoint(
-      new ReceiveEndpoint('memory', this, {
+      new ReceiveEndpoint("memory", this, {
         opposite: sendMemory
       })
     ).receive = async request => process.memoryUsage();
 
-    const sendState = new SendEndpoint('state', this, {
+    const sendState = new SendEndpoint("state", this, {
       hasBeenOpened() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'open'
+          state: "open"
         });
         // immediate send current state
         this.receive(hcs.isHealthy);
@@ -127,34 +129,34 @@ export default class ServiceHealthCheck extends Service {
           this.receive(hcs.isHealthy);
         };
         hcs.addListener(
-          'serviceStateChanged',
+          "serviceStateChanged",
           hcs._serviceStateChangedListener
         );
       },
       willBeClosed() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'close'
+          state: "close"
         });
 
         hcs.removeListener(
-          'serviceStateChanged',
+          "serviceStateChanged",
           hcs._serviceStateChangedListener
         );
       }
     });
 
     this.addEndpoint(
-      new ReceiveEndpoint('state', this, {
+      new ReceiveEndpoint("state", this, {
         opposite: sendState
       })
     ).receive = request => this.isHealthy;
 
-    const sendUptime = new SendEndpoint('uptime', this, {
+    const sendUptime = new SendEndpoint("uptime", this, {
       hasBeenOpened() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'open'
+          state: "open"
         });
 
         this.receive(process.uptime() * 1000);
@@ -167,7 +169,7 @@ export default class ServiceHealthCheck extends Service {
       willBeClosed() {
         hcs.trace({
           endpoint: this.identifier,
-          state: 'close'
+          state: "close"
         });
 
         clearInterval(hcs._uptimeInterval);
@@ -175,7 +177,7 @@ export default class ServiceHealthCheck extends Service {
     });
 
     this.addEndpoint(
-      new ReceiveEndpoint('uptime', this, {
+      new ReceiveEndpoint("uptime", this, {
         opposite: sendUptime
       })
     ).receive = request => process.uptime() * 1000;
@@ -192,7 +194,7 @@ export default class ServiceHealthCheck extends Service {
   get isHealthy() {
     const services = this.owner.services;
     const failedService = Object.keys(services).find(
-      n => services[n].state === 'failed'
+      n => services[n].state === "failed"
     );
     return failedService ? false : true;
   }
