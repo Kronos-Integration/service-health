@@ -1,7 +1,7 @@
 import test from "ava";
 
 import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
-import { Service, StandaloneServiceManager } from "@kronos-integration/service";
+import { StandaloneServiceManager } from "@kronos-integration/service";
 import ServiceHealthCheck from "../src/service-health-check.mjs";
 
 test("got state response", async t => {
@@ -30,10 +30,10 @@ test("got memory response", async t => {
 
   const r = await re.receive();
 
-  t.true(r.heapTotal > 100000, 'heapTotal');
-  t.true(r.heapUsed > 100000, 'heapUsed');
-  t.true(r.external > 100000, 'external');
-  t.true(r.rss > 100000, 'rss');
+  t.true(r.heapTotal > 100000, "heapTotal");
+  t.true(r.heapUsed > 100000, "heapUsed");
+  t.true(r.external > 100000, "external");
+  t.true(r.rss > 100000, "rss");
 });
 
 test("cpu opposite response", async t => {
@@ -59,8 +59,8 @@ test("cpu opposite response", async t => {
 
   const r = await hs.endpoints.cpu.receive();
 
-  t.true(r.user > 1000, 'user');
-  t.true(r.system > 1000, 'system');
+  t.true(r.user > 1000, "user");
+  t.true(r.system > 1000, "system");
 });
 
 test("state opposite response", async t => {
