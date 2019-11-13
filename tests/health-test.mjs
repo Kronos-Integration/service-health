@@ -1,27 +1,24 @@
-import { SendEndpoint, ReceiveEndpoint } from '@kronos-integration/endpoint';
-import { Service, ServiceProviderMixin } from '@kronos-integration/service';
-import ServiceHealthCheck from '../src/service-health-check.mjs';
-import test from 'ava';
+import test from "ava";
 
-class ServiceProvider extends ServiceProviderMixin(Service) {}
+import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
+import { Service, StandaloneServiceManager } from "@kronos-integration/service";
+import ServiceHealthCheck from "../src/service-health-check.mjs";
 
-test('got state response', async t => {
-  const sp = new ServiceProvider();
-  sp.registerServiceFactory(ServiceHealthCheck);
-  const hs = await sp.declareService({ type: 'health-check'});
+test("got state response", async t => {
+  const sp = new StandaloneServiceManager();
+  const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   await hs.start();
   const r = await hs.endpoints.state.receive();
   t.is(r, true);
 });
 
-test('got memory response', async t => {
-  const sp = new ServiceProvider();
-  sp.registerServiceFactory(ServiceHealthCheck);
-  const hs = await sp.declareService({ type: 'health-check'});
+test("got memory response", async t => {
+  const sp = new StandaloneServiceManager();
+  const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new SendEndpoint(
-    'test',
+    "test",
     {},
     {
       createOpposite: true
@@ -33,16 +30,18 @@ test('got memory response', async t => {
 
   const r = await re.receive();
 
-  t.is(r.heapTotal > 0, true);
+  t.true(r.heapTotal > 100000, 'heapTotal');
+  t.true(r.heapUsed > 100000, 'heapUsed');
+  t.true(r.external > 100000, 'external');
+  t.true(r.rss > 100000, 'rss');
 });
 
-test('cpu opposite response', async t => {
-  const sp = new ServiceProvider();
-  sp.registerServiceFactory(ServiceHealthCheck);
-  const hs = await sp.declareService({ type: 'health-check'});
+test("cpu opposite response", async t => {
+  const sp = new StandaloneServiceManager();
+  const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
-    'test',
+    "test",
     {},
     {
       createOpposite: true
@@ -60,16 +59,16 @@ test('cpu opposite response', async t => {
 
   const r = await hs.endpoints.cpu.receive();
 
-  t.is(r.user > 0, true);
+  t.true(r.user > 1000, 'user');
+  t.true(r.system > 1000, 'system');
 });
 
-test('state opposite response', async t => {
-  const sp = new ServiceProvider();
-  sp.registerServiceFactory(ServiceHealthCheck);
-  const hs = await sp.declareService({ type: 'health-check'});
+test("state opposite response", async t => {
+  const sp = new StandaloneServiceManager();
+  const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
-    'test',
+    "test",
     {},
     {
       createOpposite: true
@@ -89,13 +88,12 @@ test('state opposite response', async t => {
   t.is(r, true);
 });
 
-test('uptime opposite response', async t => {
-  const sp = new ServiceProvider();
-  sp.registerServiceFactory(ServiceHealthCheck);
-  const hs = await sp.declareService({ type: 'health-check'});
+test("uptime opposite response", async t => {
+  const sp = new StandaloneServiceManager();
+  const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
-    'test',
+    "test",
     {},
     {
       createOpposite: true
