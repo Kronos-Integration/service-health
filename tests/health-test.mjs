@@ -1,11 +1,11 @@
 import test from "ava";
 
 import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
-import { StandaloneServiceManager } from "@kronos-integration/service";
+import { StandaloneServiceProvider } from "@kronos-integration/service";
 import ServiceHealthCheck from "../src/service-health-check.mjs";
 
 test("got state response", async t => {
-  const sp = new StandaloneServiceManager();
+  const sp = new StandaloneServiceProvider();
   const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   await hs.start();
@@ -14,7 +14,7 @@ test("got state response", async t => {
 });
 
 test("got memory response", async t => {
-  const sp = new StandaloneServiceManager();
+  const sp = new StandaloneServiceProvider();
   const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new SendEndpoint(
@@ -37,7 +37,7 @@ test("got memory response", async t => {
 });
 
 test("cpu opposite response", async t => {
-  const sp = new StandaloneServiceManager();
+  const sp = new StandaloneServiceProvider();
   const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
@@ -64,7 +64,7 @@ test("cpu opposite response", async t => {
 });
 
 test("state opposite response", async t => {
-  const sp = new StandaloneServiceManager();
+  const sp = new StandaloneServiceProvider();
   const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
@@ -89,7 +89,7 @@ test("state opposite response", async t => {
 });
 
 test("uptime opposite response", async t => {
-  const sp = new StandaloneServiceManager();
+  const sp = new StandaloneServiceProvider();
   const hs = await sp.declareService({ type: ServiceHealthCheck });
 
   const re = new ReceiveEndpoint(
