@@ -47,12 +47,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kronos-Integration/kronos-service-health-check.git"
+    "url": "https://github.com/Kronos-Integration/service-health-check.git"
   },
   "bugs": {
-    "url": "https://github.com/Kronos-Integration/kronos-service-health-check/issues"
+    "url": "https://github.com/Kronos-Integration/service-health-check/issues"
   },
-  "homepage": "https://github.com/Kronos-Integration/kronos-service-health-check#readme",
+  "homepage": "https://github.com/Kronos-Integration/service-health-check#readme",
   "ava": {
     "files": [
       "tests/*-test.mjs"
