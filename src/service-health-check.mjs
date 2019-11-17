@@ -86,9 +86,10 @@ export default class ServiceHealthCheck extends Service {
 
     this.addEndpoint(
       new ReceiveEndpoint("cpu", this, {
-        opposite: sendCPU
+        opposite: sendCPU,
+        receive: async () => process.cpuUsage()
       })
-    ).receive = async request => process.cpuUsage();
+    );
 
     const sendMemory = new SendEndpoint("memory", this, {
       hasBeenOpened() {
@@ -112,9 +113,10 @@ export default class ServiceHealthCheck extends Service {
 
     this.addEndpoint(
       new ReceiveEndpoint("memory", this, {
-        opposite: sendMemory
+        opposite: sendMemory,
+        receive: async () => process.memoryUsage()
       })
-    ).receive = async request => process.memoryUsage();
+    );
 
     const sendState = new SendEndpoint("state", this, {
       hasBeenOpened() {
@@ -148,9 +150,10 @@ export default class ServiceHealthCheck extends Service {
 
     this.addEndpoint(
       new ReceiveEndpoint("state", this, {
-        opposite: sendState
+        opposite: sendState,
+        receive: request => this.isHealthy
       })
-    ).receive = request => this.isHealthy;
+    );
 
     const sendUptime = new SendEndpoint("uptime", this, {
       hasBeenOpened() {
@@ -178,9 +181,10 @@ export default class ServiceHealthCheck extends Service {
 
     this.addEndpoint(
       new ReceiveEndpoint("uptime", this, {
-        opposite: sendUptime
+        opposite: sendUptime,
+        receive: () => process.uptime() * 1000
       })
-    ).receive = request => process.uptime() * 1000;
+    );
   }
 
   /**
