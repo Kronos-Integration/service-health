@@ -20,21 +20,26 @@ export default class ServiceHealthCheck extends Service {
     return {
       ...super.endpoints,
       cpu: {
-        in: true
+        in: true,
+        opposite: endpoint => {
+          const interval = setInterval(() => {
+            endpoint.receive(process.cpuUsage());
+          }, endpoint.owner.cpuInterval * 1000);
+          return () => clearInterval(interval);
+        }
       },
       memory: {
         in: true
       },
       state: {
         in: true,
-        receive: 'isHealthy'
+        receive: "isHealthy"
       },
       uptime: {
         in: true
       }
     };
-  }
-*/
+  }*/
 
   static get configurationAttributes() {
     return mergeAttributes(
