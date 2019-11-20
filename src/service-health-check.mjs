@@ -3,6 +3,31 @@ import { createAttributes, mergeAttributes } from "model-attributes";
 import { Service } from "@kronos-integration/service";
 import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
 
+function intervalOpposite(name, action) {
+  return {
+    hasBeenConnected: endpoint => {
+      console.log("hasBeenConnected", endpoint);
+    },
+    hasBeenOpened: endpoint => {
+      console.log("hasBeenOpened", endpoint);
+
+      endpoint.receive(action());
+      return setInterval(
+        () => endpoint.receive(action()),
+        endpoint.owner[name] * 1000
+      );
+    },
+    willBeClosed: (endpoint, interval) => clearInterval(interval)
+  };
+}
+
+function endpointWithOpposite(name, owner, intervalName, action) {
+  return new ReceiveEndpoint(name, owner, {
+    opposite: intervalOpposite(intervalName, action),
+    receive: action
+  });
+}
+
 /**
  * Collects health state form all components
  * Currently we only check that there are no service is in failed state
@@ -21,22 +46,19 @@ export default class ServiceHealthCheck extends Service {
       ...super.endpoints,
       cpu: {
         in: true,
-        opposite: endpoint => {
-          const interval = setInterval(() => {
-            endpoint.receive(process.cpuUsage());
-          }, endpoint.owner.cpuInterval * 1000);
-          return () => clearInterval(interval);
-        }
+        opposite: intervalOpposite('cpuInterval',()=>process.cpuUsage())
       },
       memory: {
         in: true
+        opposite: intervalOpposite('memoryInterval',()=>process.memoryUsage())
       },
       state: {
         in: true,
         receive: "isHealthy"
       },
       uptime: {
-        in: true
+        in: true,
+        opposite: intervalOpposite('uptimeInterval',()=>process.uptime() * 1000)
       }
     };
   }*/
@@ -67,85 +89,32 @@ export default class ServiceHealthCheck extends Service {
   constructor(config, owner) {
     super(config, owner);
 
+    this.addEndpoint(
+      endpointWithOpposite("cpu", this, "cpuInterval", () => process.cpuUsage())
+    );
+
+    this.addEndpoint(
+      endpointWithOpposite("memory", this, "memoryInterval", () => process.memoryUsage())
+    );
+
+    this.addEndpoint(
+      endpointWithOpposite("uptime", this, "uptimeInterval", () => process.uptime() * 1000)
+    );
+
     const hcs = this;
 
-    const sendCPU = new SendEndpoint("cpu", this, {
-      hasBeenOpened() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "open"
-        });
-        hcs._cpuInterval = setInterval(() => {
-          this.receive(process.cpuUsage());
-        }, hcs.cpuInterval * 1000);
-        this.receive(process.cpuUsage());
-      },
-      willBeClosed() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "close"
-        });
-        clearInterval(hcs._cpuInterval);
-      }
-    });
-
-    this.addEndpoint(
-      new ReceiveEndpoint("cpu", this, {
-        opposite: sendCPU,
-        receive: async () => process.cpuUsage()
-      })
-    );
-
-    const sendMemory = new SendEndpoint("memory", this, {
-      hasBeenOpened() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "open"
-        });
-        hcs._memoryInterval = setInterval(() => {
-          this.receive(process.memoryUsage());
-        }, hcs.memoryInterval * 1000);
-      },
-      willBeClosed() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "close"
-        });
-
-        clearInterval(hcs._memoryInterval);
-      }
-    });
-
-    this.addEndpoint(
-      new ReceiveEndpoint("memory", this, {
-        opposite: sendMemory,
-        receive: async () => process.memoryUsage()
-      })
-    );
-
     const sendState = new SendEndpoint("state", this, {
-      hasBeenOpened() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "open"
-        });
-        // immediate send current state
-        this.receive(hcs.isHealthy);
+      hasBeenOpened(endpoint) {
+        endpoint.receive(hcs.isHealthy);
+        hcs._serviceStateChangedListener = () =>
+          endpoint.receive(hcs.isHealthy);
 
-        hcs._serviceStateChangedListener = () => {
-          this.receive(hcs.isHealthy);
-        };
         hcs.addListener(
           "serviceStateChanged",
           hcs._serviceStateChangedListener
         );
       },
-      willBeClosed() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "close"
-        });
-
+      willBeClosed(endpoint) {
         hcs.removeListener(
           "serviceStateChanged",
           hcs._serviceStateChangedListener
@@ -157,37 +126,6 @@ export default class ServiceHealthCheck extends Service {
       new ReceiveEndpoint("state", this, {
         opposite: sendState,
         receive: request => this.isHealthy
-      })
-    );
-
-    const sendUptime = new SendEndpoint("uptime", this, {
-      hasBeenOpened() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "open"
-        });
-
-        this.receive(process.uptime() * 1000);
-
-        hcs._uptimeInterval = setInterval(
-          () => this.receive(process.uptime() * 1000),
-          hcs.uptimeInterval * 1000
-        );
-      },
-      willBeClosed() {
-        hcs.trace({
-          endpoint: this.identifier,
-          state: "close"
-        });
-
-        clearInterval(hcs._uptimeInterval);
-      }
-    });
-
-    this.addEndpoint(
-      new ReceiveEndpoint("uptime", this, {
-        opposite: sendUptime,
-        receive: () => process.uptime() * 1000
       })
     );
   }

@@ -1,113 +1,71 @@
 import test from "ava";
 
-import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
+import { ReceiveEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
 import ServiceHealthCheck from "../src/service-health-check.mjs";
 
-test("got state response", async t => {
+async function wait(msecs = 1000) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(), msecs);
+  });
+}
+
+async function hct(t, endpointName, expected) {
   const sp = new StandaloneServiceProvider();
-  const hs = await sp.declareService({ type: ServiceHealthCheck });
+  const hcs = await sp.declareService({
+    type: ServiceHealthCheck,
+   // logLevel: "trace"
+  });
 
-  await hs.start();
-  const r = await hs.endpoints.state.receive();
-  t.is(r, true);
-});
+  const endpoint = hcs.endpoints[endpointName];
 
-test("got memory response", async t => {
-  const sp = new StandaloneServiceProvider();
-  const hs = await sp.declareService({ type: ServiceHealthCheck });
+  await hcs.start();
+  const response = await endpoint.receive();
 
-  const re = new SendEndpoint(
-    "test",
-    {},
-    {
-      createOpposite: true
-    }
-  );
-  re.connected = hs.endpoints.memory;
+  if (typeof expected === "function") {
+    await expected(t, response);
+  } else {
+    t.is(response, expected);
+  }
 
-  await hs.start();
-
-  const r = await re.receive();
-
-  t.true(r.heapTotal > 100000, "heapTotal");
-  t.true(r.heapUsed > 100000, "heapUsed");
-  t.true(r.external > 100000, "external");
-  t.true(r.rss > 100000, "rss");
-});
-
-test("cpu opposite response", async t => {
-  const sp = new StandaloneServiceProvider();
-  const hs = await sp.declareService({ type: ServiceHealthCheck });
+  let oppositeResponse;
 
   const re = new ReceiveEndpoint(
     "test",
     {},
     {
-      createOpposite: true
+      opposite: {
+        // connected: endpoint,
+        receive: response => {
+          console.log(response);
+          oppositeResponse = response;
+        }
+      }
     }
   );
 
-  let cpuUsage;
-  re.receive = message => {
-    cpuUsage = message;
-  };
+  re.opposite.connected = endpoint;
 
-  hs.endpoints.cpu.opposite.connected = re;
+  await wait(1000);
+}
 
-  await hs.start();
+hct.title = (providedTitle = "", endpointName, expected) =>
+  `health check ${providedTitle} ${endpointName} ${expected}`.trim();
 
-  const r = await hs.endpoints.cpu.receive();
+test(hct, "state", true);
 
-  t.true(r.user > 1000, "user");
-  t.true(r.system > 1000, "system");
+test(hct, "memory", (t, response) => {
+  t.true(response.heapTotal > 100000, "heapTotal");
+  t.true(response.heapUsed > 100000, "heapUsed");
+  t.true(response.external > 100000, "external");
+  t.true(response.rss > 1000000, "rss");
 });
 
-test("state opposite response", async t => {
-  const sp = new StandaloneServiceProvider();
-  const hs = await sp.declareService({ type: ServiceHealthCheck });
-
-  const re = new ReceiveEndpoint(
-    "test",
-    {},
-    {
-      createOpposite: true
-    }
-  );
-
-  let theState = 77;
-
-  re.receive = message => (theState = message);
-
-  hs.endpoints.state.opposite.connected = re;
-
-  await hs.start();
-
-  const r = await hs.endpoints.state.receive();
-
-  t.is(r, true);
+test(hct, "cpu", (t, response) => {
+  t.true(response.user > 1000, "user");
+  t.true(response.system > 1000, "system");
 });
 
-test("uptime opposite response", async t => {
-  const sp = new StandaloneServiceProvider();
-  const hs = await sp.declareService({ type: ServiceHealthCheck });
-
-  const re = new ReceiveEndpoint(
-    "test",
-    {},
-    {
-      createOpposite: true
-    }
-  );
-
-  let oppositeUptime = -1;
-
-  re.receive = message => (oppositeUptime = message);
-
-  hs.endpoints.uptime.opposite.connected = re;
-
-  await hs.start();
-
-  const uptimeResponse = await hs.endpoints.uptime.receive();
-  t.is(Math.abs(oppositeUptime - uptimeResponse) < 10, true);
+test(hct, "uptime", (t, response) => {
+  t.true(response > 100, "uptime");
 });
