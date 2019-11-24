@@ -38,8 +38,7 @@ Currently we only check that there are no service is in failed state
 
 ### Parameters
 
--   `config`  
--   `owner`  
+-   `args` **...any** 
 
 ### autostart
 

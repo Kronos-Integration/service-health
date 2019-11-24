@@ -86,8 +86,8 @@ export default class ServiceHealthCheck extends Service {
     );
   }
 
-  constructor(config, owner) {
-    super(config, owner);
+  constructor(...args) {
+    super(...args);
 
     this.addEndpoint(
       endpointWithOpposite("cpu", this, "cpuInterval", () => process.cpuUsage())
