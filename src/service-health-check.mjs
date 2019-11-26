@@ -5,9 +5,6 @@ import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
 
 function intervalOpposite(name, action) {
   return {
-    hasBeenConnected: endpoint => {
-      console.log("hasBeenConnected", endpoint);
-    },
     hasBeenOpened: endpoint => {
       console.log("hasBeenOpened", endpoint);
 
