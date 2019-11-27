@@ -9,10 +9,28 @@ const intervalOpposite = {
 
     const interval = setInterval(
       () => endpoint.receive(o.receive()),
-      endpoint.owner[endpoint.name + 'Interval'] * 1000
+      endpoint.owner[endpoint.name + "Interval"] * 1000
     );
 
-    return () => clearInterval(interval)
+    return () => clearInterval(interval);
+  }
+};
+
+const intervalEndpointDefs = {
+  cpu: {
+    description: "cpu endpoint send interval (in seconds)",
+    opposite: intervalOpposite,
+    receive: () => process.cpuUsage()
+  },
+  memory: {
+    description: "memory endpoint send interval (in seconds)",
+    opposite: intervalOpposite,
+    receive: () => process.memoryUsage()
+  },
+  uptime: {
+    description: "uptime endpoint send interval (in seconds)",
+    opposite: intervalOpposite,
+    receive: () => process.uptime()
   }
 };
 
@@ -43,40 +61,22 @@ export default class ServiceHealthCheck extends Service {
           }
         }
       },
-      cpu: {
-        opposite: intervalOpposite,
-        receive: () => process.cpuUsage()
-      },
-      memory: {
-        opposite: intervalOpposite,
-        receive: () => process.memoryUsage()
-      },
-      uptime: {
-        opposite: intervalOpposite,
-        receive: () => process.uptime()
-      },
+      ...intervalEndpointDefs
     };
   }
 
   static get configurationAttributes() {
     return mergeAttributes(
-      createAttributes({
-        uptimeInterval: {
-          description: "uptime endpoint send interval (in seconds)",
-          default: 60,
-          type: "duration"
-        },
-        memoryInterval: {
-          description: "memory endpoint send interval (in seconds)",
-          default: 60,
-          type: "duration"
-        },
-        cpuInterval: {
-          description: "cpu endpoint send interval (in seconds)",
-          default: 60,
-          type: "duration"
-        }
-      }),
+      createAttributes(
+        Object.entries(intervalEndpointDefs).reduce((all, [name, def]) => {
+          all[name + "Interval"] = {
+            description: def.description,
+            default: 60,
+            type: "duration"
+          };
+          return all;
+        }, {})
+      ),
       Service.configurationAttributes
     );
   }
@@ -93,8 +93,10 @@ export default class ServiceHealthCheck extends Service {
    * @return {boolean} true if there are no failed services
    */
   get isHealthy() {
-    return Object.values(this.owner.services).
-      find(service => service.state === "failed")
-      ? false : true;
+    return Object.values(this.owner.services).find(
+      service => service.state === "failed"
+    )
+      ? false
+      : true;
   }
 }
