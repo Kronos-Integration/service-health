@@ -22,8 +22,8 @@ collects and reports system health status
 ### Table of Contents
 
 -   [ServiceHealthCheck](#servicehealthcheck)
-    -   [Parameters](#parameters)
     -   [autostart](#autostart)
+    -   [isHealthy](#ishealthy)
     -   [name](#name)
 
 ## ServiceHealthCheck
@@ -33,15 +33,15 @@ collects and reports system health status
 Collects health state form all components
 Currently we only check that there are no service is in failed state
 
-### Parameters
-
--   `args` **...any** 
-
 ### autostart
 
 Start immediate
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true
+
+### isHealthy
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** true if there are no failed services
 
 ### name
 

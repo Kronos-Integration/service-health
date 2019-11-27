@@ -1,28 +1,20 @@
 import process from "process";
 import { createAttributes, mergeAttributes } from "model-attributes";
 import { Service } from "@kronos-integration/service";
-import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
 
-function intervalOpposite(name, action) {
-  return {
-    opened: endpoint => {
-      endpoint.receive(action());
-      const interval = setInterval(
-        () => endpoint.receive(action()),
-        endpoint.owner[name] * 1000
-      );
+const intervalOpposite = {
+  opened: endpoint => {
+    const o = endpoint.opposite;
+    endpoint.receive(o.receive());
 
-      return () => clearInterval(interval)
-    }
-  };
-}
+    const interval = setInterval(
+      () => endpoint.receive(o.receive()),
+      endpoint.owner[endpoint.name + 'Interval'] * 1000
+    );
 
-function endpointWithOpposite(name, owner, intervalName, action) {
-  return new ReceiveEndpoint(name, owner, {
-    opposite: intervalOpposite(intervalName, action),
-    receive: action
-  });
-}
+    return () => clearInterval(interval)
+  }
+};
 
 /**
  * Collects health state form all components
@@ -47,24 +39,22 @@ export default class ServiceHealthCheck extends Service {
             endpoint.receive(hcs.isHealthy);
             const listener = () => endpoint.receive(hcs.isHealthy);
             hcs.addListener("serviceStateChanged", listener);
-            return endpoint => hcs.removeListener("serviceStateChanged", listener);
+            return () => hcs.removeListener("serviceStateChanged", listener);
           }
         }
       },
-/*
       cpu: {
-        in: true,
-        opposite: intervalOpposite('cpuInterval',()=>process.cpuUsage())
+        opposite: intervalOpposite,
+        receive: () => process.cpuUsage()
       },
       memory: {
-        in: true
-        opposite: intervalOpposite('memoryInterval',()=>process.memoryUsage())
+        opposite: intervalOpposite,
+        receive: () => process.memoryUsage()
       },
       uptime: {
-        in: true,
-        opposite: intervalOpposite('uptimeInterval',()=>process.uptime() * 1000)
-      }
-*/
+        opposite: intervalOpposite,
+        receive: () => process.uptime()
+      },
     };
   }
 
@@ -88,22 +78,6 @@ export default class ServiceHealthCheck extends Service {
         }
       }),
       Service.configurationAttributes
-    );
-  }
-
-  constructor(...args) {
-    super(...args);
-
-    this.addEndpoint(
-      endpointWithOpposite("cpu", this, "cpuInterval", () => process.cpuUsage())
-    );
-
-    this.addEndpoint(
-      endpointWithOpposite("memory", this, "memoryInterval", () => process.memoryUsage())
-    );
-
-    this.addEndpoint(
-      endpointWithOpposite("uptime", this, "uptimeInterval", () => process.uptime() * 1000)
     );
   }
 

@@ -71,5 +71,5 @@ test(hct, "cpu", (t, response) => {
 });
 
 test(hct, "uptime", (t, response) => {
-  t.true(response > 100, "uptime");
+  t.true(response > 0.1, "uptime");
 });
