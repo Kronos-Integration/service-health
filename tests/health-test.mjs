@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { ReceiveEndpoint } from "@kronos-integration/endpoint";
+import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
 import ServiceHealthCheck from "../src/service-health-check.mjs";
 
@@ -14,13 +14,25 @@ async function hct(t, endpointName, expected) {
   const sp = new StandaloneServiceProvider();
   const hcs = await sp.declareService({
     type: ServiceHealthCheck,
-   // logLevel: "trace"
+    uptimeInterval: 1,
+    memoryInterval: 1,
+    cpuInterval: 1
   });
 
-  const endpoint = hcs.endpoints[endpointName];
+  await sp.start();
 
-  await hcs.start();
-  const response = await endpoint.receive();
+  const oppositeResponses = [];
+
+  const se = new SendEndpoint("test", {}, {
+    connected: hcs.endpoints[endpointName],
+    opposite: {
+      receive: response => {
+        oppositeResponses.push(response);
+      }
+    }
+  });
+
+  let response = await se.receive();
 
   if (typeof expected === "function") {
     await expected(t, response);
@@ -28,25 +40,17 @@ async function hct(t, endpointName, expected) {
     t.is(response, expected);
   }
 
-  let oppositeResponse;
+  await wait(4000);
 
-  const re = new ReceiveEndpoint(
-    "test",
-    {},
-    {
-      opposite: {
-        // connected: endpoint,
-        receive: response => {
-          console.log(response);
-          oppositeResponse = response;
-        }
-      }
-    }
-  );
+  //console.log(endpointName,oppositeResponses);
 
-  re.opposite.connected = endpoint;
+  response = oppositeResponses[0];
 
-  await wait(1000);
+  if (typeof expected === "function") {
+    await expected(t, oppositeResponses[0]);
+  } else {
+    t.is(oppositeResponses[0], expected);
+  }
 }
 
 hct.title = (providedTitle = "", endpointName, expected) =>

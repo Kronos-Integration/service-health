@@ -5,16 +5,15 @@ import { SendEndpoint, ReceiveEndpoint } from "@kronos-integration/endpoint";
 
 function intervalOpposite(name, action) {
   return {
-    hasBeenOpened: endpoint => {
-      console.log("hasBeenOpened", endpoint);
-
+    opened: endpoint => {
       endpoint.receive(action());
-      return setInterval(
+      const interval = setInterval(
         () => endpoint.receive(action()),
         endpoint.owner[name] * 1000
       );
-    },
-    willBeClosed: (endpoint, interval) => clearInterval(interval)
+
+      return () => clearInterval(interval)
+    }
   };
 }
 
@@ -101,21 +100,13 @@ export default class ServiceHealthCheck extends Service {
     const hcs = this;
 
     const sendState = new SendEndpoint("state", this, {
-      hasBeenOpened(endpoint) {
+      opened(endpoint) {
         endpoint.receive(hcs.isHealthy);
-        hcs._serviceStateChangedListener = () =>
-          endpoint.receive(hcs.isHealthy);
+        const listener = () => endpoint.receive(hcs.isHealthy);
 
-        hcs.addListener(
-          "serviceStateChanged",
-          hcs._serviceStateChangedListener
-        );
-      },
-      willBeClosed(endpoint) {
-        hcs.removeListener(
-          "serviceStateChanged",
-          hcs._serviceStateChangedListener
-        );
+        hcs.addListener("serviceStateChanged", listener);
+
+        return (endpoint) => hcs.removeListener("serviceStateChanged", listener);
       }
     });
 
