@@ -36,10 +36,22 @@ export default class ServiceHealthCheck extends Service {
     return "health-check";
   }
 
-  /*
   static get endpoints() {
     return {
       ...super.endpoints,
+      state: {
+        receive: "isHealthy",
+        opposite: {
+          opened: endpoint => {
+            const hcs = endpoint.owner;
+            endpoint.receive(hcs.isHealthy);
+            const listener = () => endpoint.receive(hcs.isHealthy);
+            hcs.addListener("serviceStateChanged", listener);
+            return endpoint => hcs.removeListener("serviceStateChanged", listener);
+          }
+        }
+      },
+/*
       cpu: {
         in: true,
         opposite: intervalOpposite('cpuInterval',()=>process.cpuUsage())
@@ -48,16 +60,13 @@ export default class ServiceHealthCheck extends Service {
         in: true
         opposite: intervalOpposite('memoryInterval',()=>process.memoryUsage())
       },
-      state: {
-        in: true,
-        receive: "isHealthy"
-      },
       uptime: {
         in: true,
         opposite: intervalOpposite('uptimeInterval',()=>process.uptime() * 1000)
       }
+*/
     };
-  }*/
+  }
 
   static get configurationAttributes() {
     return mergeAttributes(
@@ -96,26 +105,6 @@ export default class ServiceHealthCheck extends Service {
     this.addEndpoint(
       endpointWithOpposite("uptime", this, "uptimeInterval", () => process.uptime() * 1000)
     );
-
-    const hcs = this;
-
-    const sendState = new SendEndpoint("state", this, {
-      opened(endpoint) {
-        endpoint.receive(hcs.isHealthy);
-        const listener = () => endpoint.receive(hcs.isHealthy);
-
-        hcs.addListener("serviceStateChanged", listener);
-
-        return (endpoint) => hcs.removeListener("serviceStateChanged", listener);
-      }
-    });
-
-    this.addEndpoint(
-      new ReceiveEndpoint("state", this, {
-        opposite: sendState,
-        receive: request => this.isHealthy
-      })
-    );
   }
 
   /**
@@ -126,11 +115,12 @@ export default class ServiceHealthCheck extends Service {
     return true;
   }
 
+  /**
+   * @return {boolean} true if there are no failed services
+   */
   get isHealthy() {
-    const services = this.owner.services;
-    const failedService = Object.keys(services).find(
-      n => services[n].state === "failed"
-    );
-    return failedService ? false : true;
+    return Object.values(this.owner.services).
+      find(service => service.state === "failed")
+      ? false : true;
   }
 }
