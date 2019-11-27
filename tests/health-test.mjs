@@ -73,3 +73,8 @@ test(hct, "cpu", (t, response) => {
 test(hct, "uptime", (t, response) => {
   t.true(response > 0.1, "uptime");
 });
+
+test(hct, "resourceUsage", (t, response) => {
+  t.true(response.userCPUTime > 1, "userCPUTime");
+  t.true(response.systemCPUTime > 1, "systemCPUTime");
+});
