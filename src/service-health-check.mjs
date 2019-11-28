@@ -18,19 +18,15 @@ const intervalOpposite = {
 
 const intervalEndpointDefs = {
   cpu: {
-    opposite: intervalOpposite,
     receive: () => process.cpuUsage()
   },
   memory: {
-    opposite: intervalOpposite,
     receive: () => process.memoryUsage()
   },
   uptime: {
-    opposite: intervalOpposite,
     receive: () => process.uptime()
   },
   resourceUsage: {
-    opposite: intervalOpposite,
     receive: () => process.resourceUsage()
   }
 };
@@ -73,7 +69,8 @@ export default class ServiceHealthCheck extends Service {
           all[name + "Interval"] = {
             description: `${name} endpoint send interval (in seconds)`,
             default: 60,
-            type: "duration"
+            type: "duration",
+            opposite: intervalOpposite
           };
           return all;
         }, {})
