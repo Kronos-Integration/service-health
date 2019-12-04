@@ -2,13 +2,12 @@ import process from "process";
 import { createAttributes, mergeAttributes } from "model-attributes";
 import { Service } from "@kronos-integration/service";
 
-const intervalOpposite = {
-  opened: endpoint => {
-    const o = endpoint.opposite;
-    endpoint.receive(o.receive());
+const intervalOptions = {
+  didConnect: endpoint => {
+    endpoint.send(endpoint.receive());
 
     const interval = setInterval(
-      () => endpoint.receive(o.receive()),
+      () => endpoint.send(endpoint.receive()),
       endpoint.owner[endpoint.name + "Interval"] * 1000
     );
 
@@ -19,19 +18,19 @@ const intervalOpposite = {
 const intervalEndpointDefs = {
   cpu: {
     receive: () => process.cpuUsage(),
-    opposite: intervalOpposite
+    ...intervalOptions
   },
   memory: {
     receive: () => process.memoryUsage(),
-    opposite: intervalOpposite
+    ...intervalOptions
   },
   uptime: {
     receive: () => process.uptime(),
-    opposite: intervalOpposite
+    ...intervalOptions
   },
   resourceUsage: {
     receive: () => process.resourceUsage(),
-    opposite: intervalOpposite
+    ...intervalOptions
   }
 };
 
@@ -52,14 +51,12 @@ export default class ServiceHealthCheck extends Service {
       ...super.endpoints,
       state: {
         receive: "isHealthy",
-        opposite: {
-          opened: endpoint => {
-            const hcs = endpoint.owner;
-            endpoint.receive(hcs.isHealthy);
-            const listener = () => endpoint.receive(hcs.isHealthy);
-            hcs.addListener("serviceStateChanged", listener);
-            return () => hcs.removeListener("serviceStateChanged", listener);
-          }
+        didConnect: endpoint => {
+          const hcs = endpoint.owner;
+          endpoint.send(hcs.isHealthy);
+          const listener = () => endpoint.send(hcs.isHealthy);
+          hcs.addListener("serviceStateChanged", listener);
+          return () => hcs.removeListener("serviceStateChanged", listener);
         }
       },
       ...intervalEndpointDefs

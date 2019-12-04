@@ -25,14 +25,12 @@ async function hct(t, endpointName, expected) {
 
   const se = new SendEndpoint("test", {}, {
     connected: hcs.endpoints[endpointName],
-    opposite: {
-      receive: response => {
-        oppositeResponses.push(response);
-      }
+    receive: response => {
+      oppositeResponses.push(response);
     }
   });
 
-  let response = await se.receive();
+  let response = await se.send();
 
   if (typeof expected === "function") {
     await expected(t, response);
