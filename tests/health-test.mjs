@@ -21,31 +21,21 @@ async function hct(t, endpointName, expected) {
 
   await sp.start();
 
-  const oppositeResponses = [];
+  const responses = [];
 
   const se = new SendEndpoint("test", { name: "o"}, {
     connected: hcs.endpoints[endpointName],
     receive: response => {
-      oppositeResponses.push(response);
+      responses.push(response);
     }
   });
 
-  let response = await se.send();
-
-  if (typeof expected === "function") {
-    await expected(t, response);
-  } else {
-    t.is(response, expected);
-  }
-
   await wait(4000);
 
-  response = oppositeResponses[0];
-
   if (typeof expected === "function") {
-    await expected(t, oppositeResponses[0]);
+    await expected(t, responses);
   } else {
-    t.is(oppositeResponses[0], expected);
+    t.is(responses[0], expected);
   }
 }
 
@@ -54,23 +44,31 @@ hct.title = (providedTitle = "", endpointName, expected) =>
 
 test(hct, "state", true);
 
-test(hct, "memory", (t, response) => {
+test(hct, "memory", (t, responses) => {
+  t.true(responses.length > 2);
+  const response = responses[0];
   t.true(response.heapTotal > 100000, "heapTotal");
   t.true(response.heapUsed > 100000, "heapUsed");
   t.true(response.external > 100000, "external");
   t.true(response.rss > 1000000, "rss");
 });
 
-test(hct, "cpu", (t, response) => {
+test(hct, "cpu", (t, responses) => {
+  t.true(responses.length > 2);
+  const response = responses[0];
   t.true(response.user > 1000, "user");
   t.true(response.system > 1000, "system");
 });
 
-test(hct, "uptime", (t, response) => {
+test(hct, "uptime", (t, responses) => {
+  t.true(responses.length > 2);
+  const response = responses[0];
   t.true(response > 0.1, "uptime");
 });
 
-test(hct, "resourceUsage", (t, response) => {
+test(hct, "resourceUsage", (t, responses) => {
+ // t.true(responses.length > 2);
+  const response = responses[0];
   t.true(response.userCPUTime > 1, "userCPUTime");
   t.true(response.systemCPUTime > 1, "systemCPUTime");
 });
