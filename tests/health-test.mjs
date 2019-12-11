@@ -40,8 +40,6 @@ async function hct(t, endpointName, expected) {
 
   await wait(4000);
 
-  //console.log(endpointName,oppositeResponses);
-
   response = oppositeResponses[0];
 
   if (typeof expected === "function") {
