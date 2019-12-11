@@ -23,7 +23,7 @@ async function hct(t, endpointName, expected) {
 
   const oppositeResponses = [];
 
-  const se = new SendEndpoint("test", {}, {
+  const se = new SendEndpoint("test", { name: "o"}, {
     connected: hcs.endpoints[endpointName],
     receive: response => {
       oppositeResponses.push(response);
