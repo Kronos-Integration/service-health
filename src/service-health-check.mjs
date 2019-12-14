@@ -5,7 +5,6 @@ import { Service } from "@kronos-integration/service";
 const intervalOptions = {
   didConnect: (endpoint, other) => {
     if (other.direction === "inout") {
-      console.log(`didConnect: ${endpoint}    <> ${other}`);
       endpoint.send(endpoint.receive());
       const interval = setInterval(
         () => endpoint.send(endpoint.receive()),
@@ -53,12 +52,14 @@ export default class ServiceHealthCheck extends Service {
       ...super.endpoints,
       state: {
         receive: "isHealthy",
-        didConnect: endpoint => {
-          const hcs = endpoint.owner;
-          endpoint.send(hcs.isHealthy);
-          const listener = () => endpoint.send(hcs.isHealthy);
-          hcs.addListener("serviceStateChanged", listener);
-          return () => hcs.removeListener("serviceStateChanged", listener);
+        didConnect: (endpoint, other) => {
+          if (other.direction === "inout") {
+            const hcs = endpoint.owner;
+            endpoint.send(hcs.isHealthy);
+            const listener = () => endpoint.send(hcs.isHealthy);
+            hcs.addListener("serviceStateChanged", listener);
+            return () => hcs.removeListener("serviceStateChanged", listener);
+          }
         }
       },
       ...intervalEndpointDefs
