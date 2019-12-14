@@ -16,7 +16,8 @@ async function hct(t, endpointName, expected) {
     type: ServiceHealthCheck,
     uptimeInterval: 1,
     memoryInterval: 1,
-    cpuInterval: 1
+    cpuInterval: 1,
+    resourceUsageInterval: 1
   });
 
   await sp.start();
@@ -26,6 +27,7 @@ async function hct(t, endpointName, expected) {
   const se = new SendEndpoint("test", { name: "o"}, {
     connected: hcs.endpoints[endpointName],
     receive: response => {
+      //console.log(response);
       responses.push(response);
     }
   });
@@ -67,7 +69,7 @@ test(hct, "uptime", (t, responses) => {
 });
 
 test(hct, "resourceUsage", (t, responses) => {
- // t.true(responses.length > 2);
+  t.true(responses.length > 2);
   const response = responses[0];
   t.true(response.userCPUTime > 1, "userCPUTime");
   t.true(response.systemCPUTime > 1, "systemCPUTime");

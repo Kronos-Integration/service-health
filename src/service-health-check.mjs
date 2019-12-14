@@ -5,7 +5,6 @@ import { Service } from "@kronos-integration/service";
 const intervalOptions = {
   didConnect: endpoint => {
     endpoint.send(endpoint.receive());
-
     const interval = setInterval(
       () => endpoint.send(endpoint.receive()),
       endpoint.owner[endpoint.name + "Interval"] * 1000
@@ -66,14 +65,16 @@ export default class ServiceHealthCheck extends Service {
   static get configurationAttributes() {
     return mergeAttributes(
       createAttributes(
-        Object.entries(intervalEndpointDefs).reduce((all, [name, def]) => {
-          all[name + "Interval"] = {
-            description: `${name} endpoint send interval (in seconds)`,
-            default: 60,
-            type: "duration"
-          };
-          return all;
-        }, {})
+        Object.fromEntries(
+          Object.entries(intervalEndpointDefs).map(([name, def]) => [
+            name + "Interval",
+            {
+              description: `${name} endpoint send interval (in seconds)`,
+              default: 60,
+              type: "duration"
+            }
+          ])
+        )
       ),
       Service.configurationAttributes
     );
