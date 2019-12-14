@@ -3,14 +3,17 @@ import { createAttributes, mergeAttributes } from "model-attributes";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
-  didConnect: endpoint => {
-    endpoint.send(endpoint.receive());
-    const interval = setInterval(
-      () => endpoint.send(endpoint.receive()),
-      endpoint.owner[endpoint.name + "Interval"] * 1000
-    );
+  didConnect: (endpoint, other) => {
+    if (other.direction === "inout") {
+      console.log(`didConnect: ${endpoint}    <> ${other}`);
+      endpoint.send(endpoint.receive());
+      const interval = setInterval(
+        () => endpoint.send(endpoint.receive()),
+        endpoint.owner[endpoint.name + "Interval"] * 1000
+      );
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }
 };
 

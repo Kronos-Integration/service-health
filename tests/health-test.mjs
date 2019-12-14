@@ -24,13 +24,16 @@ async function hct(t, endpointName, expected) {
 
   const responses = [];
 
-  const se = new SendEndpoint("test", { name: "o"}, {
+  const se = new SendEndpoint("test-receice", sp, {
     connected: hcs.endpoints[endpointName],
     receive: response => {
-      //console.log(response);
       responses.push(response);
     }
   });
+
+  /*const se2 = new SendEndpoint("test", sp, {
+    connected: hcs.endpoints[endpointName]
+  });*/
 
   await wait(4000);
 
