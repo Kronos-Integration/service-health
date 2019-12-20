@@ -5,9 +5,7 @@ import { StandaloneServiceProvider } from "@kronos-integration/service";
 import ServiceHealthCheck from "../src/service-health-check.mjs";
 
 async function wait(msecs = 1000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => resolve(), msecs);
-  });
+  return new Promise((resolve, reject) => setTimeout(() => resolve(), msecs));
 }
 
 async function hct(t, endpointName, expected) {
@@ -31,9 +29,10 @@ async function hct(t, endpointName, expected) {
     }
   });
 
-  /*const se2 = new SendEndpoint("test", sp, {
+  // 2nd. endpoint will not receive anything
+  const se2 = new SendEndpoint("test", sp, {
     connected: hcs.endpoints[endpointName]
-  });*/
+  });
 
   await wait(4000);
 
