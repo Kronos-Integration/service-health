@@ -74,7 +74,7 @@ export default class ServiceHealthCheck extends Service {
             name + "Interval",
             {
               description: `${name} endpoint send interval (in seconds)`,
-              default: 60,
+              default: 30,
               type: "duration"
             }
           ])
