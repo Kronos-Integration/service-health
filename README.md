@@ -2,8 +2,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Kronos-Integration/service-health-check/badge.svg)](https://snyk.io/test/github/Kronos-Integration/service-health-check)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![npm](https://img.shields.io/npm/v/@kronos-integration/service-health-check.svg)](https://www.npmjs.com/package/@kronos-integration/service-health-check)
-[![Greenkeeper](https://badges.greenkeeper.io/Kronos-Integration/service-health-check.svg)](https://greenkeeper.io/)
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/Kronos-Integration/service-health-check)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![minified size](https://badgen.net/bundlephobia/min/@kronos-integration/service-health-check)](https://bundlephobia.com/result?p=@kronos-integration/service-health-check)
 [![downloads](http://img.shields.io/npm/dm/@kronos-integration/service-health-check.svg?style=flat-square)](https://npmjs.org/package/@kronos-integration/service-health-check)
@@ -11,6 +9,8 @@
 [![Build Status](https://secure.travis-ci.org/Kronos-Integration/service-health-check.png)](http://travis-ci.org/Kronos-Integration/service-health-check)
 [![codecov.io](http://codecov.io/github/Kronos-Integration/service-health-check/coverage.svg?branch=master)](http://codecov.io/github/Kronos-Integration/service-health-check?branch=master)
 [![Coverage Status](https://coveralls.io/repos/Kronos-Integration/service-health-check/badge.svg)](https://coveralls.io/r/Kronos-Integration/service-health-check)
+[![Greenkeeper](https://badges.greenkeeper.io/Kronos-Integration/service-health-check.svg)](https://greenkeeper.io/)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/Kronos-Integration/service-health-check)
 
 # kronos-service-health-check
 
