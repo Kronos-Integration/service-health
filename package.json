@@ -28,7 +28,8 @@
     "docs": "documentation readme src/service-health-check.mjs --section=API",
     "lint": "documentation lint src/service-health-check.mjs",
     "posttest": "markdown-doctest",
-    "test": "ava"
+    "test": "ava",
+    "prepare": "rollup -c"
   },
   "dependencies": {
     "@kronos-integration/service": "^8.3.14",
