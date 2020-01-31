@@ -1,0 +1,10 @@
+{
+  "name": "@kronos-integration/service-health-check",
+  "description": "collects and reports system health status",
+  "icons": [
+    {
+      "src": "facicon.ico",
+      "sizes": "16x16"
+    }
+  ]
+}
