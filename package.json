@@ -7,7 +7,6 @@
   "sideEffects": false,
   "type": "module",
   "main": "src/service-health-check.mjs",
-  "module": "src/service-health-check.mjs",
   "description": "collects and reports system health status",
   "keywords": [
     "kronos-service"
