@@ -8,7 +8,7 @@
   "type": "module",
   "main": "src/service-health-check.mjs",
   "exports": {
-    ".": "./src/service-health-check.mjs",
+    ".": "src/service-health-check.mjs",
     "./": "./"
   },
   "description": "collects and reports system health status",
