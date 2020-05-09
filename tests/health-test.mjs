@@ -2,7 +2,7 @@ import test from "ava";
 
 import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
-import ServiceHealthCheck from "../src/service-health-check.mjs";
+import { ServiceHealthCheck } from "@kronos-integration/service-health-check";
 
 async function wait(msecs = 1000) {
   return new Promise((resolve, reject) => setTimeout(() => resolve(), msecs));

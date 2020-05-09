@@ -39,7 +39,7 @@ const intervalEndpointDefs = {
  * Collects health state form all components
  * Currently we only check that there are no service is in failed state
  */
-export default class ServiceHealthCheck extends Service {
+export class ServiceHealthCheck extends Service {
   /**
    * @return {string} 'health-check'
    */
@@ -103,3 +103,6 @@ export default class ServiceHealthCheck extends Service {
       : true;
   }
 }
+
+
+export default ServiceHealthCheck;
