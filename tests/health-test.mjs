@@ -20,26 +20,24 @@ async function hct(t, endpointName, expected) {
 
   await sp.start();
 
-  const responses = [];
+  const responses1 = [];
 
-  const se = new SendEndpoint("test-receice", sp, {
+  const se1 = new SendEndpoint("test-receice1", sp, {
     connected: hcs.endpoints[endpointName],
-    receive: response => {
-      responses.push(response);
-    }
+    receive: response => responses1.push(response)
   });
 
   // 2nd. endpoint will not receive anything
-  const se2 = new SendEndpoint("test", sp, {
+  const se2 = new SendEndpoint("test-receive2", sp, {
     connected: hcs.endpoints[endpointName]
   });
 
   await wait(4000);
 
   if (typeof expected === "function") {
-    await expected(t, responses);
+    await expected(t, responses1, "responses test-receive1");
   } else {
-    t.is(responses[0], expected);
+    t.is(responses1[0], expected, "responses test-receive1");
   }
 }
 
