@@ -4,6 +4,15 @@ import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
   didConnect: (endpoint, other) => {
+    /*console.log(
+      "didConnect",
+      [...endpoint.connections()],
+      endpoint.name,
+      endpoint,
+      "<=>",
+      other.name,
+      other
+    );*/
     if (other.direction === "inout") {
       endpoint.send(endpoint.receive());
       const interval = setInterval(
@@ -103,6 +112,5 @@ export class ServiceHealthCheck extends Service {
       : true;
   }
 }
-
 
 export default ServiceHealthCheck;
