@@ -33,7 +33,7 @@
     "lint": "documentation lint ./src/service-health-check.mjs"
   },
   "dependencies": {
-    "@kronos-integration/service": "^8.4.0",
+    "@kronos-integration/service": "^8.5.0",
     "model-attributes": "^4.1.6"
   },
   "devDependencies": {
