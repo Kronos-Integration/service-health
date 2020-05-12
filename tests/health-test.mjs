@@ -20,7 +20,7 @@ async function hct(t, endpointName, expected) {
 
   await sp.start();
 
-  const receivers = ["test-receice1"  /*, "test-receice2"*/].map(name => {
+  const receivers = ["test-receice1", "test-receice2"].map(name => {
     const responses = [];
     return {
       name,
@@ -31,11 +31,6 @@ async function hct(t, endpointName, expected) {
       })
     };
   });
-
-  // 2nd. endpoint will not receive anything
-  /*const se2 = new SendEndpoint("test-receive2", sp, {
-    connected: hcs.endpoints[endpointName]
-  });*/
 
   await wait(4000);
 

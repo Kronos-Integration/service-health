@@ -3,16 +3,8 @@ import { createAttributes, mergeAttributes } from "model-attributes";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
+  multi: true,
   didConnect: (endpoint, other) => {
-    /*console.log(
-      "didConnect",
-      [...endpoint.connections()],
-      endpoint.name,
-      endpoint,
-      "<=>",
-      other.name,
-      other
-    );*/
     if (other.direction === "inout") {
       endpoint.send(endpoint.receive());
       const interval = setInterval(
@@ -46,7 +38,7 @@ const intervalEndpointDefs = {
 
 /**
  * Collects health state form all components
- * Currently we only check that there are no service is in failed state
+ * Currently we only check that there is no service is in failed state
  */
 export class ServiceHealthCheck extends Service {
   /**
@@ -60,6 +52,7 @@ export class ServiceHealthCheck extends Service {
     return {
       ...super.endpoints,
       state: {
+        multi: true,
         receive: "isHealthy",
         didConnect: (endpoint, other) => {
           if (other.direction === "inout") {

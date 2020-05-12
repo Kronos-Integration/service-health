@@ -31,7 +31,7 @@ collects and reports system health status
 **Extends Service**
 
 Collects health state form all components
-Currently we only check that there are no service is in failed state
+Currently we only check that there is no service is in failed state
 
 ### autostart
 
