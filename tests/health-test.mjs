@@ -18,8 +18,6 @@ async function hct(t, endpointName, expected) {
     resourceUsageInterval: 1
   });
 
-  await sp.start();
-
   const receivers = ["test-receice1", "test-receice2"].map(name => {
     const responses = [];
     return {
@@ -31,6 +29,8 @@ async function hct(t, endpointName, expected) {
       })
     };
   });
+
+  await sp.start();
 
   await wait(4000);
 
