@@ -59,8 +59,8 @@ export class ServiceHealthCheck extends Service {
             const hcs = endpoint.owner;
             endpoint.send(hcs.isHealthy);
             const listener = () => endpoint.send(hcs.isHealthy);
-            hcs.addListener("serviceStateChanged", listener);
-            return () => hcs.removeListener("serviceStateChanged", listener);
+            hcs.owner.addListener("serviceStateChanged", listener);
+            return () => hcs.owner.removeListener("serviceStateChanged", listener);
           }
         }
       },
