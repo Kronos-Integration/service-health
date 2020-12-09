@@ -2,8 +2,12 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![minified size](https://badgen.net/bundlephobia/min/@kronos-integration/service-health-check)](https://bundlephobia.com/result?p=@kronos-integration/service-health-check)
 [![downloads](http://img.shields.io/npm/dm/@kronos-integration/service-health-check.svg?style=flat-square)](https://npmjs.org/package/@kronos-integration/service-health-check)
+[![GitHub Issues](https://img.shields.io/github/issues/Kronos-Integration/service-health-check.svg?style=flat-square)](https://github.com/Kronos-Integration/service-health-check/issues)
+[![Build Action Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FKronos-Integration%2Fservice-health-check%2Fbadge&style=flat)](https://actions-badge.atrox.dev/Kronos-Integration/service-health-check/goto)
 [![Styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![Known Vulnerabilities](https://snyk.io/test/github/Kronos-Integration/service-health-check/badge.svg)](https://snyk.io/test/github/Kronos-Integration/service-health-check)
+[![Coverage Status](https://coveralls.io/repos/Kronos-Integration/service-health-check/badge.svg)](https://coveralls.io/github/Kronos-Integration/service-health-check)
 
 # kronos-service-health-check
 
