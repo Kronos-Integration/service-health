@@ -5,8 +5,6 @@
     "access": "public"
   },
   "sideEffects": false,
-  "type": "module",
-  "main": "./src/service-health-check.mjs",
   "exports": {
     ".": "./src/service-health-check.mjs"
   },
