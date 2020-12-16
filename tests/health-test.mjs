@@ -2,7 +2,7 @@ import test from "ava";
 
 import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
-import { ServiceHealthCheck } from "@kronos-integration/service-health-check";
+import { ServiceHealth } from "@kronos-integration/service-health";
 
 async function wait(msecs = 1000) {
   return new Promise((resolve, reject) => setTimeout(() => resolve(), msecs));
@@ -11,7 +11,7 @@ async function wait(msecs = 1000) {
 async function hct(t, endpointName, expected) {
   const sp = new StandaloneServiceProvider();
   const hcs = await sp.declareService({
-    type: ServiceHealthCheck,
+    type: ServiceHealth,
     uptimeInterval: 1,
     memoryInterval: 1,
     cpuInterval: 1,

@@ -1,6 +1,6 @@
 import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
-import { ServiceHealthCheck } from "@kronos-integration/service-health-check";
+import { ServiceHealthCheck } from "@kronos-integration/service-health";
 
 async function exec() {
   const sp = new StandaloneServiceProvider();
