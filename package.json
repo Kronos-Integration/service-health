@@ -1,12 +1,12 @@
 {
-  "name": "@kronos-integration/service-health-check",
+  "name": "@kronos-integration/service-health",
   "version": "0.0.0-semantic-release",
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
   "exports": {
-    ".": "./src/service-health-check.mjs"
+    ".": "./src/service-health.mjs"
   },
   "description": "collects and reports system health status",
   "keywords": [
@@ -27,9 +27,9 @@
     "test": "npm run test:ava",
     "test:ava": "ava --timeout 2m tests/*.mjs",
     "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 2m tests/*.mjs && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
-    "docs": "documentation readme ./src/service-health-check.mjs --section=API",
+    "docs": "documentation readme ./src/service-health.mjs --section=API",
     "lint": "npm run lint:docs",
-    "lint:docs": "documentation lint ./src/service-health-check.mjs"
+    "lint:docs": "documentation lint ./src/service-health.mjs"
   },
   "dependencies": {
     "@kronos-integration/endpoint": "^9.3.4",
@@ -47,12 +47,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kronos-Integration/service-health-check.git"
+    "url": "https://github.com/Kronos-Integration/service-health.git"
   },
   "bugs": {
-    "url": "https://github.com/Kronos-Integration/service-health-check/issues"
+    "url": "https://github.com/Kronos-Integration/service-health/issues"
   },
-  "homepage": "https://github.com/Kronos-Integration/service-health-check#readme",
+  "homepage": "https://github.com/Kronos-Integration/service-health#readme",
   "template": {
     "inheritFrom": [
       "arlac77/template-arlac77-github",
