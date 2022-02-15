@@ -32,9 +32,9 @@
     "lint:docs": "documentation lint ./src/**/*.mjs"
   },
   "dependencies": {
-    "@kronos-integration/endpoint": "^9.4.22",
-    "@kronos-integration/service": "^10.4.19",
-    "model-attributes": "^4.1.12"
+    "@kronos-integration/endpoint": "^9.4.23",
+    "@kronos-integration/service": "^10.4.20",
+    "model-attributes": "^4.1.14"
   },
   "devDependencies": {
     "ava": "^4.0.1",
@@ -43,7 +43,7 @@
     "semantic-release": "^19.0.2"
   },
   "engines": {
-    "node": ">=16.13.2"
+    "node": ">=16.14.0"
   },
   "repository": {
     "type": "git",
