@@ -47,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kronos-Integration/service-health.git"
+    "url": "https://github.com/Kronos-Integration/service-health"
   },
   "bugs": {
     "url": "https://github.com/Kronos-Integration/service-health/issues"
