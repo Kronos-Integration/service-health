@@ -1,12 +1,8 @@
 import test from "ava";
-
+import { setTimeout } from "timers/promises";
 import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
 import { ServiceHealth } from "@kronos-integration/service-health";
-
-async function wait(msecs = 1000) {
-  return new Promise((resolve, reject) => setTimeout(() => resolve(), msecs));
-}
 
 async function hct(t, endpointName, expected) {
   const sp = new StandaloneServiceProvider();
@@ -32,7 +28,7 @@ async function hct(t, endpointName, expected) {
 
   await sp.start();
 
-  await wait(4000);
+  await setTimeout(4000);
 
   for (const r of receivers) {
     if (typeof expected === "function") {
