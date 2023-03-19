@@ -1,5 +1,5 @@
 import test from "ava";
-import { setTimeout } from "timers/promises";
+import { setTimeout } from "node:timers/promises";
 import { SendEndpoint } from "@kronos-integration/endpoint";
 import { StandaloneServiceProvider } from "@kronos-integration/service";
 import { ServiceHealth } from "@kronos-integration/service-health";
