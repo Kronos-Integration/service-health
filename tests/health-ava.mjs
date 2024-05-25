@@ -37,6 +37,8 @@ async function hct(t, endpointName, expected) {
       t.is(r.responses[0], expected, `responses ${r.name}`);
     }
   }
+
+  await sp.stop();
 }
 
 hct.title = (providedTitle = "", endpointName, expected) =>
