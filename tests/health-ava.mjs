@@ -11,7 +11,9 @@ async function hct(t, endpointName, expected) {
     uptimeInterval: 1,
     memoryInterval: 1,
     cpuInterval: 1,
-    resourceUsageInterval: 1
+    resourceUsageInterval: 1,
+    constrainedMemory: 1,
+    availableMemory: 1
   });
 
   const receivers = ["test-receice1", "test-receice2"].map(name => {
@@ -73,4 +75,14 @@ test(hct, "resourceUsage", (t, responses) => {
   const response = responses[0];
   t.true(response.userCPUTime > 1, "userCPUTime");
   t.true(response.systemCPUTime > 1, "systemCPUTime");
+});
+
+test(hct, "constrainedMemory", (t, responses) => {
+  t.true(responses.length > 1, `responses # > 1 only ${responses.length}`);
+});
+
+test(hct, "availableMemory", (t, responses) => {
+  t.true(responses.length > 1, `responses # > 1 only ${responses.length}`);
+  const response = responses[0];
+  t.true(response > 10000, "availableMemory");
 });

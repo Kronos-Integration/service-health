@@ -17,9 +17,22 @@ const intervalOptions = {
   }
 };
 
+let lastCpuUsage;
+
 const intervalEndpointDefs = {
   cpu: {
-    receive: () => process.cpuUsage(),
+    receive: () => { 
+      lastCpuUsage = process.cpuUsage(lastCpuUsage);
+      return lastCpuUsage;
+    },
+    ...intervalOptions
+  },
+  availableMemory: {
+    receive: () => process.availableMemory(),
+    ...intervalOptions
+  },
+  constrainedMemory: {
+    receive: () => process.constrainedMemory(),
     ...intervalOptions
   },
   memory: {
