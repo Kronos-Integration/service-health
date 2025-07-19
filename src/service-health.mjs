@@ -1,5 +1,5 @@
 import process from "process";
-import { mergeAttributeDefinitions, prepareAttributesDefinitions } from "model-attributes";
+import { mergeAttributeDefinitions, prepareAttributesDefinitions } from "pacc";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
