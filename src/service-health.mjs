@@ -1,5 +1,5 @@
 import process from "process";
-import { createAttributes, mergeAttributes } from "model-attributes";
+import { mergeAttributeDefinitions, prepareAttributesDefinitions } from "model-attributes";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
@@ -82,8 +82,8 @@ export class ServiceHealth extends Service {
   }
 
   static get configurationAttributes() {
-    return mergeAttributes(
-      createAttributes(
+    return mergeAttributeDefinitions(
+      prepareAttributesDefinitions(
         Object.fromEntries(
           Object.entries(intervalEndpointDefs).map(([name, def]) => [
             name + "Interval",
