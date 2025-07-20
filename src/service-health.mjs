@@ -21,7 +21,7 @@ let lastCpuUsage;
 
 const intervalEndpointDefs = {
   cpu: {
-    receive: () => { 
+    receive: () => {
       lastCpuUsage = process.cpuUsage(lastCpuUsage);
       return lastCpuUsage;
     },
@@ -73,7 +73,8 @@ export class ServiceHealth extends Service {
             endpoint.send(hcs.isHealthy);
             const listener = () => endpoint.send(hcs.isHealthy);
             hcs.owner.addListener("serviceStateChanged", listener);
-            return () => hcs.owner.removeListener("serviceStateChanged", listener);
+            return () =>
+              hcs.owner.removeListener("serviceStateChanged", listener);
           }
         }
       },
@@ -81,23 +82,21 @@ export class ServiceHealth extends Service {
     };
   }
 
-  static get configurationAttributes() {
-    return mergeAttributeDefinitions(
-      prepareAttributesDefinitions(
-        Object.fromEntries(
-          Object.entries(intervalEndpointDefs).map(([name, def]) => [
-            name + "Interval",
-            {
-              description: `${name} endpoint send interval (in seconds)`,
-              default: 30,
-              type: "duration"
-            }
-          ])
-        )
-      ),
-      Service.configurationAttributes
-    );
-  }
+  static attributes = mergeAttributeDefinitions(
+    prepareAttributesDefinitions(
+      Object.fromEntries(
+        Object.entries(intervalEndpointDefs).map(([name, def]) => [
+          name + "Interval",
+          {
+            description: `${name} endpoint send interval (in seconds)`,
+            default: 30,
+            type: "duration"
+          }
+        ])
+      )
+    ),
+    Service.attributes
+  );
 
   /**
    * Start immediate
