@@ -1,5 +1,5 @@
 import process from "process";
-import { mergeAttributeDefinitions, prepareAttributesDefinitions } from "pacc";
+import { prepareAttributesDefinitions } from "pacc";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
@@ -82,18 +82,16 @@ export class ServiceHealth extends Service {
     };
   }
 
-  static attributes = mergeAttributeDefinitions(
-    prepareAttributesDefinitions(
-      Object.fromEntries(
-        Object.entries(intervalEndpointDefs).map(([name, def]) => [
-          name + "Interval",
-          {
-            description: `${name} endpoint send interval (in seconds)`,
-            default: 30,
-            type: "duration"
-          }
-        ])
-      )
+  static attributes = prepareAttributesDefinitions(
+    Object.fromEntries(
+      Object.entries(intervalEndpointDefs).map(([name, def]) => [
+        name + "Interval",
+        {
+          description: `${name} endpoint send interval (in seconds)`,
+          default: 30,
+          type: "duration"
+        }
+      ])
     ),
     Service.attributes
   );
