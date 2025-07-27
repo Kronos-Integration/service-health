@@ -33,8 +33,8 @@
   },
   "dependencies": {
     "@kronos-integration/endpoint": "^10.1.1",
-    "@kronos-integration/service": "^13.1.8",
-    "pacc": "^4.1.1"
+    "@kronos-integration/service": "^13.1.9",
+    "pacc": "^4.2.1"
   },
   "devDependencies": {
     "ava": "^6.4.1",
