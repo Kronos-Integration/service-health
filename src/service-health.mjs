@@ -1,5 +1,5 @@
 import process from "process";
-import { prepareAttributesDefinitions } from "pacc";
+import { prepareAttributesDefinitions, duration_attribute } from "pacc";
 import { Service } from "@kronos-integration/service";
 
 const intervalOptions = {
@@ -87,9 +87,9 @@ export class ServiceHealth extends Service {
       Object.entries(intervalEndpointDefs).map(([name, def]) => [
         name + "Interval",
         {
+          ...duration_attribute,
           description: `${name} endpoint send interval (in seconds)`,
-          default: 30,
-          type: "duration"
+          default: 30
         }
       ])
     ),
