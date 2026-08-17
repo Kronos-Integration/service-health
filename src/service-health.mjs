@@ -64,6 +64,18 @@ export class ServiceHealth extends Service {
   static get endpoints() {
     return {
       ...super.endpoints,
+      heartbeat: {
+        multi: true,
+        didConnect: (endpoint, other) => {
+          if (other.direction === "inout") {
+            const interval = setInterval(
+              () => endpoint.send("heartbeat"),
+              10 * 60 * 1000
+            );
+            return () => clearInterval(interval);
+          }
+        }
+      },
       state: {
         multi: true,
         receive: "isHealthy",
