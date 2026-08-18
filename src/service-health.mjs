@@ -1,4 +1,5 @@
-import process from "process";
+import process from "node:process";
+import { exit } from "node:process";
 import { prepareAttributesDefinitions, duration_attribute } from "pacc";
 import { Service } from "@kronos-integration/service";
 
@@ -65,12 +66,15 @@ export class ServiceHealth extends Service {
     return {
       ...super.endpoints,
       heartbeat: {
+        direction: "out",
         multi: true,
+        receive: "heartbeat",
         didConnect: (endpoint, other) => {
+          //console.log("didConnect", endpoint.owner.heartbeatInterval);
           if (other.direction === "inout") {
             const interval = setInterval(
               () => endpoint.send("heartbeat"),
-              10 * 60 * 1000
+              endpoint.owner.heartbeatInterval * 1000
             );
             return () => clearInterval(interval);
           }
@@ -95,16 +99,24 @@ export class ServiceHealth extends Service {
   }
 
   static attributes = prepareAttributesDefinitions(
-    Object.fromEntries(
-      Object.entries(intervalEndpointDefs).map(([name, def]) => [
-        name + "Interval",
-        {
-          ...duration_attribute,
-          description: `${name} endpoint send interval (in seconds)`,
-          default: 30
-        }
-      ])
-    ),
+    {
+      ...Object.fromEntries(
+        Object.entries(intervalEndpointDefs).map(([name, def]) => [
+          name + "Interval",
+          {
+            ...duration_attribute,
+            name: name + "Interval",
+            description: `${name} endpoint send interval (in seconds)`,
+            default: 30
+          }
+        ])
+      ),
+      heartbeatInterval: {
+        ...duration_attribute,
+        name: "heartbeatInterval",
+        default: 30
+      }
+    },
     Service.attributes
   );
 
@@ -125,6 +137,15 @@ export class ServiceHealth extends Service {
     )
       ? false
       : true;
+  }
+
+  heartbeat(value) {
+    this.info(`heartbeat result ${value}`);
+    switch (value) {
+      case "fatal":
+        exit(-1);
+        break;
+    }
   }
 }
 
